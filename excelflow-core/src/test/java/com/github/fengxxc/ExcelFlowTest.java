@@ -1,7 +1,7 @@
 package com.github.fengxxc;
 
 import com.github.fengxxc.model.Foward;
-import com.github.fengxxc.model.Pipeline;
+import com.github.fengxxc.model.Part;
 import com.github.fengxxc.model.NobelPrize;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.junit.Before;
@@ -26,8 +26,8 @@ public class ExcelFlowTest {
     public void read() throws IOException, ParserConfigurationException, OpenXML4JException, SAXException {
         // new ArrayList<Integer>().stream().map()
         try(InputStream is = ExcelFlow.class.getResourceAsStream("/excel/test1.xlsx")) {
-            ExcelFlow.read(is).stream(
-                    Pipeline.of(NobelPrize.class)
+            ExcelFlow.read(is).focuses(
+                    Part.of(NobelPrize.class)
                             .sheet("Sheet1")
                             .cellMap(cellMappers -> cellMappers
                                     .cell("A2").as(NobelPrize::getRanking)
@@ -44,8 +44,8 @@ public class ExcelFlowTest {
                             )
                             .iterative(true)
                             .foward(Foward.Down)
-            ).proccess((pipelineId, efCell) -> {
-                System.out.println("pipelineId = " + pipelineId);
+            ).proccess((partId, efCell) -> {
+                System.out.println("partId = " + partId);
                 System.out.println(efCell.toString());
             });
 

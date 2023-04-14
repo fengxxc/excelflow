@@ -22,9 +22,9 @@ public class ExcelFlow {
         return excelReader;
     }
 
-    public static ExcelReader write(OutputStream os) {
+    /*public static ExcelWrite write(OutputStream os) {
         // TODO
         return null;
-    }
+    }*/
 
 }

@@ -33,22 +33,22 @@ public class ExcelReader {
         this.reader = reader;
     }
 
-    public ExcelReader stream(Pipeline... pipelines) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException {
-        for (int i = 0; i < pipelines.length; i++) {
-            final Pipeline pipeline = pipelines[i];
-            if (pipeline.getId() == -1) {
-                pipeline.setId(i);
+    public ExcelReader focuses(Part... parts) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException {
+        for (int i = 0; i < parts.length; i++) {
+            final Part part = parts[i];
+            if (part.getId() == -1) {
+                part.setId(i);
             }
-            final String sheetName = pipeline.getSheet();
+            final String sheetName = part.getSheet();
             /*if (sheetName == null || "".equals(sheetName)) {
                 throw new ExcelPortConfigException("can not get sheetIndex or sheetName, bunch id: " + bunch.getId());
             }*/
             // int left = Integer.MAX_VALUE, right = 0, top = Integer.MAX_VALUE, bottom = 0;
             int length = 0;
-            final Foward foward = pipeline.getFoward();
-            for (int j = 0; j < pipeline.getCellMappers().size(); j++) {
-                CellMapper cellMapper = (CellMapper) pipeline.getCellMappers().get(j);
-                cellMapper.setPipeline(pipeline);
+            final Foward foward = part.getFoward();
+            for (int j = 0; j < part.getCellMappers().size(); j++) {
+                CellMapper cellMapper = (CellMapper) part.getCellMappers().get(j);
+                cellMapper.setPart(part);
                 int top = foward == Foward.Up ? 0 : cellMapper.getPoint().Y;
                 int right = foward == Foward.Right ? Integer.MAX_VALUE : cellMapper.getPoint().X;
                 int bottom = foward == Foward.Down ? Integer.MAX_VALUE : cellMapper.getPoint().Y;

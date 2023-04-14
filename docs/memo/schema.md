@@ -3,8 +3,8 @@
     "config": {
         "validateStrategy": null // (gridValue) => {validate: Boolean, message: String}
     },
-    // pipelines
-    "pipelines": [{
+    // parts
+    "parts": [{
         "id": "",
         "object": null, // will reflect to this object type
         "sheet": null, // sheetName or sheetAt, null is all sheet

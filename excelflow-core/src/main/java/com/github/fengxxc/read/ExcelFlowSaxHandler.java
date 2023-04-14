@@ -8,7 +8,6 @@ import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -58,11 +57,11 @@ public class ExcelFlowSaxHandler<R> implements XSSFSheetXMLHandler.SheetContents
 
         // System.out.println("searchGrids = " + Arrays.toString(searchCellMappers.toArray()));
         for (CellMapper cellMapper : searchCellMappers) {
-            if (!cellMapper.getPipeline().getSheet().equals(this.sheetName)) {
+            if (!cellMapper.getPart().getSheet().equals(this.sheetName)) {
                 continue;
             }
             final EFCell efCell = new EFCell(cellReference, formattedValue, cellMapper);
-            this.cellCallback.accept(cellMapper.getPipeline().getId(), efCell);
+            this.cellCallback.accept(cellMapper.getPart().getId(), efCell);
         }
     }
 }

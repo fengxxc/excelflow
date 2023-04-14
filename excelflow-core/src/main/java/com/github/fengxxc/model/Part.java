@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  * @author fengxxc
  * @date 2023-04-01
  */
-public class Pipeline<T> {
+public class Part<T> {
     private int id = -1;
     // private int sheetAt = -1;
     private String sheet;
@@ -23,26 +23,26 @@ public class Pipeline<T> {
 
     private Class<T> object;
 
-    private Pipeline() {
+    private Part() {
     }
 
-    public static <T> Pipeline<T> of(int id, Class<T> object) {
-        return new Pipeline<T>().setId(id);
+    public static <T> Part<T> of(int id, Class<T> object) {
+        return new Part<T>().setId(id);
     }
 
-    public static <T> Pipeline<T> of(Class<T> object) {
-        return new Pipeline<T>().setObject(object);
+    public static <T> Part<T> of(Class<T> object) {
+        return new Part<T>().setObject(object);
     }
 
-    public static <T> Pipeline<T> of(Class<T> object, boolean iterative) {
-        return new Pipeline<T>().setObject(object).iterative(iterative);
+    public static <T> Part<T> of(Class<T> object, boolean iterative) {
+        return new Part<T>().setObject(object).iterative(iterative);
     }
 
     public int getId() {
         return id;
     }
 
-    public Pipeline<T> setId(int id) {
+    public Part<T> setId(int id) {
         this.id = id;
         return this;
     }
@@ -60,7 +60,7 @@ public class Pipeline<T> {
         return sheet;
     }
 
-    public Pipeline<T> sheet(String sheet) {
+    public Part<T> sheet(String sheet) {
         this.sheet = sheet;
         return this;
     }
@@ -69,13 +69,13 @@ public class Pipeline<T> {
         return cellMappers;
     }
 
-    public Pipeline<T> setCellMappers(CellMapper<T>... cellMappers) {
+    public Part<T> setCellMappers(CellMapper<T>... cellMappers) {
         final ArrayList<CellMapper<T>> mappers = new ArrayList<>(Arrays.asList(cellMappers));
         this.cellMappers = mappers;
         return this;
     }
 
-    public Pipeline<T> cellMap(Consumer<CellMappers<T>> func) {
+    public Part<T> cellMap(Consumer<CellMappers<T>> func) {
         final CellMappers<T> mapper = new CellMappers<T>();
         func.accept(mapper);
         final List<CellMapper<T>> mappers = mapper.getMappers();
@@ -87,7 +87,7 @@ public class Pipeline<T> {
         return iterative;
     }
 
-    public Pipeline<T> iterative(Boolean iterative) {
+    public Part<T> iterative(Boolean iterative) {
         this.iterative = iterative;
         return this;
     }
@@ -96,7 +96,7 @@ public class Pipeline<T> {
         return foward;
     }
 
-    public Pipeline<T> foward(Foward foward) {
+    public Part<T> foward(Foward foward) {
         this.foward = foward;
         return this;
     }
@@ -105,7 +105,7 @@ public class Pipeline<T> {
         return stepLength;
     }
 
-    public Pipeline<T> setStepLength(int stepLength) {
+    public Part<T> setStepLength(int stepLength) {
         this.stepLength = stepLength;
         return this;
     }
@@ -114,7 +114,7 @@ public class Pipeline<T> {
         return stepTotal;
     }
 
-    public Pipeline<T> setStepTotal(int stepTotal) {
+    public Part<T> setStepTotal(int stepTotal) {
         this.stepTotal = stepTotal;
         return this;
     }
@@ -123,7 +123,7 @@ public class Pipeline<T> {
         return object;
     }
 
-    public Pipeline<T> setObject(Class<T> object) {
+    public Part<T> setObject(Class<T> object) {
         this.object = object;
         return this;
     }

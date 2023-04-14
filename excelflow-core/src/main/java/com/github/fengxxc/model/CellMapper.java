@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
  * @date 2023-04-01
  */
 public class CellMapper<T> implements Comparable<CellMapper<T>> {
-    private Pipeline<T> pipeline;
+    private Part<T> part;
 
     private Point point;
     private String objectProperty;
@@ -39,12 +39,12 @@ public class CellMapper<T> implements Comparable<CellMapper<T>> {
         return of(point);
     }
 
-    public Pipeline getPipeline() {
-        return pipeline;
+    public Part getPart() {
+        return part;
     }
 
-    public CellMapper setPipeline(Pipeline parentBunchs) {
-        this.pipeline = parentBunchs;
+    public CellMapper setPart(Part parentBunchs) {
+        this.part = parentBunchs;
         return this;
     }
 
