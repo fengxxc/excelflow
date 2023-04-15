@@ -38,6 +38,10 @@ public class Point {
         return of(rowRef - 1, x);
     }
 
+    public int getAxis(char xOrY) {
+        return xOrY == 'x' || xOrY == 'X' ? X : Y;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

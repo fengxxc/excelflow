@@ -15,11 +15,11 @@ public class NobelPrize implements Serializable {
     private int total;
     private int naturalScienceAwardTotal;
     private int physics;
-    private int chemistry;
+    private String chemistry;
     private int physiologyOrMedicine;
     private int economy;
     private int literature;
-    private int peace;
+    private String peace;
 
 
     public int getRanking() {
@@ -76,11 +76,11 @@ public class NobelPrize implements Serializable {
         return this;
     }
 
-    public int getChemistry() {
+    public String getChemistry() {
         return chemistry;
     }
 
-    public NobelPrize setChemistry(int chemistry) {
+    public NobelPrize setChemistry(String chemistry) {
         this.chemistry = chemistry;
         return this;
     }
@@ -112,11 +112,11 @@ public class NobelPrize implements Serializable {
         return this;
     }
 
-    public int getPeace() {
+    public String getPeace() {
         return peace;
     }
 
-    public NobelPrize setPeace(int peace) {
+    public NobelPrize setPeace(String peace) {
         this.peace = peace;
         return this;
     }

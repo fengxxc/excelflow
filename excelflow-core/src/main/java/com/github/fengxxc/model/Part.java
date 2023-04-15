@@ -21,6 +21,8 @@ public class Part<T> {
     private int stepLength = 1;
     private int stepTotal = -1;
 
+    private Point endPoint;
+
     private Class<T> object;
 
     private Part() {
@@ -83,7 +85,7 @@ public class Part<T> {
         return this;
     }
 
-    public Boolean getIterative() {
+    public Boolean iterative() {
         return iterative;
     }
 
@@ -119,7 +121,7 @@ public class Part<T> {
         return this;
     }
 
-    public Class<T> getObject() {
+    public Class getObject() {
         return object;
     }
 
@@ -128,4 +130,12 @@ public class Part<T> {
         return this;
     }
 
+    public Point getEndPoint() {
+        return endPoint;
+    }
+
+    public Part<T> setEndPoint(Point endPoint) {
+        this.endPoint = endPoint;
+        return this;
+    }
 }

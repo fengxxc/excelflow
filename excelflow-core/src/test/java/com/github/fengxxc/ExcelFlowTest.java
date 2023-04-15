@@ -44,10 +44,15 @@ public class ExcelFlowTest {
                             )
                             .iterative(true)
                             .foward(Foward.Down)
-            ).proccess((partId, efCell) -> {
-                System.out.println("partId = " + partId);
+                            .setStepLength(1)
+            ).onCell(efCell -> {
+                System.out.println("onCell");
                 System.out.println(efCell.toString());
-            });
+            }).onPart((partId, object) -> {
+                System.out.println("onPart");
+                // System.out.println(partId);
+                System.out.println(object);
+            }).proccess();
 
         }
     }

@@ -1,5 +1,7 @@
 package com.github.fengxxc.model;
 
+import java.util.List;
+
 /**
  * @author fengxxc
  * @date 2023-04-13
@@ -7,7 +9,7 @@ package com.github.fengxxc.model;
 public class EFCell {
     private String cellReference;
     private String formattedValue;
-    private CellMapper cellMapper;
+    private List<CellMapper> cellMappers;
 
     public EFCell() {
     }
@@ -17,10 +19,10 @@ public class EFCell {
         this.formattedValue = formattedValue;
     }
 
-    public EFCell(String cellReference, String formattedValue, CellMapper cellMapper) {
+    public EFCell(String cellReference, String formattedValue, List<CellMapper> cellMappers) {
         this.cellReference = cellReference;
         this.formattedValue = formattedValue;
-        this.cellMapper = cellMapper;
+        this.cellMappers = cellMappers;
     }
 
     public String getCellReference() {
@@ -41,12 +43,12 @@ public class EFCell {
         return this;
     }
 
-    public CellMapper getCellMapper() {
-        return cellMapper;
+    public List<CellMapper> getCellMappers() {
+        return cellMappers;
     }
 
-    public EFCell setCellMapper(CellMapper cellMapper) {
-        this.cellMapper = cellMapper;
+    public EFCell setCellMappers(List<CellMapper> cellMappers) {
+        this.cellMappers = cellMappers;
         return this;
     }
 
@@ -55,7 +57,7 @@ public class EFCell {
         return "EFCell{" +
                 "cellReference='" + cellReference + '\'' +
                 ", formattedValue='" + formattedValue + '\'' +
-                ", cellMapper=" + cellMapper.toString() +
+                ", cellMapper=" + cellMappers.toString() +
                 '}';
     }
 }

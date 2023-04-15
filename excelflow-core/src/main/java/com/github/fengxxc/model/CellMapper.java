@@ -77,6 +77,7 @@ public class CellMapper<T> implements Comparable<CellMapper<T>> {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+        this.objectProperty = propName;
         return this;
     }
 
