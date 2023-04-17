@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
  * @date 2023-04-01
  */
 public class CellMapper<T> implements Comparable<CellMapper<T>> {
-    private Part<T> part;
+    private Picker<T> picker;
 
     private Point point;
     private String objectProperty;
@@ -39,12 +39,12 @@ public class CellMapper<T> implements Comparable<CellMapper<T>> {
         return of(point);
     }
 
-    public Part getPart() {
-        return part;
+    public Picker getPart() {
+        return picker;
     }
 
-    public CellMapper setPart(Part parentBunchs) {
-        this.part = parentBunchs;
+    public CellMapper setPart(Picker parentBunchs) {
+        this.picker = parentBunchs;
         return this;
     }
 

@@ -67,4 +67,8 @@ public class Point {
                 ", X=" + X +
                 '}';
     }
+
+    public CellReference toCellReference() {
+        return new CellReference(Y, X);
+    }
 }

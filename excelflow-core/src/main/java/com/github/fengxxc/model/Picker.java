@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  * @author fengxxc
  * @date 2023-04-01
  */
-public class Part<T> {
+public class Picker<T> {
     private int id = -1;
     // private int sheetAt = -1;
     private String sheet;
@@ -25,26 +25,26 @@ public class Part<T> {
 
     private Class<T> object;
 
-    private Part() {
+    private Picker() {
     }
 
-    public static <T> Part<T> of(int id, Class<T> object) {
-        return new Part<T>().setId(id);
+    public static <T> Picker<T> of(int id, Class<T> object) {
+        return new Picker<T>().setId(id);
     }
 
-    public static <T> Part<T> of(Class<T> object) {
-        return new Part<T>().setObject(object);
+    public static <T> Picker<T> of(Class<T> object) {
+        return new Picker<T>().setObject(object);
     }
 
-    public static <T> Part<T> of(Class<T> object, boolean iterative) {
-        return new Part<T>().setObject(object).iterative(iterative);
+    public static <T> Picker<T> of(Class<T> object, boolean iterative) {
+        return new Picker<T>().setObject(object).iterative(iterative);
     }
 
     public int getId() {
         return id;
     }
 
-    public Part<T> setId(int id) {
+    public Picker<T> setId(int id) {
         this.id = id;
         return this;
     }
@@ -62,7 +62,7 @@ public class Part<T> {
         return sheet;
     }
 
-    public Part<T> sheet(String sheet) {
+    public Picker<T> sheet(String sheet) {
         this.sheet = sheet;
         return this;
     }
@@ -71,13 +71,13 @@ public class Part<T> {
         return cellMappers;
     }
 
-    public Part<T> setCellMappers(CellMapper<T>... cellMappers) {
+    public Picker<T> setCellMappers(CellMapper<T>... cellMappers) {
         final ArrayList<CellMapper<T>> mappers = new ArrayList<>(Arrays.asList(cellMappers));
         this.cellMappers = mappers;
         return this;
     }
 
-    public Part<T> cellMap(Consumer<CellMappers<T>> func) {
+    public Picker<T> cellMap(Consumer<CellMappers<T>> func) {
         final CellMappers<T> mapper = new CellMappers<T>();
         func.accept(mapper);
         final List<CellMapper<T>> mappers = mapper.getMappers();
@@ -89,7 +89,7 @@ public class Part<T> {
         return iterative;
     }
 
-    public Part<T> iterative(Boolean iterative) {
+    public Picker<T> iterative(Boolean iterative) {
         this.iterative = iterative;
         return this;
     }
@@ -98,7 +98,7 @@ public class Part<T> {
         return foward;
     }
 
-    public Part<T> foward(Foward foward) {
+    public Picker<T> foward(Foward foward) {
         this.foward = foward;
         return this;
     }
@@ -107,7 +107,7 @@ public class Part<T> {
         return stepLength;
     }
 
-    public Part<T> setStepLength(int stepLength) {
+    public Picker<T> setStepLength(int stepLength) {
         this.stepLength = stepLength;
         return this;
     }
@@ -116,7 +116,7 @@ public class Part<T> {
         return stepTotal;
     }
 
-    public Part<T> setStepTotal(int stepTotal) {
+    public Picker<T> setStepTotal(int stepTotal) {
         this.stepTotal = stepTotal;
         return this;
     }
@@ -125,7 +125,7 @@ public class Part<T> {
         return object;
     }
 
-    public Part<T> setObject(Class<T> object) {
+    public Picker<T> setObject(Class<T> object) {
         this.object = object;
         return this;
     }
@@ -134,7 +134,7 @@ public class Part<T> {
         return endPoint;
     }
 
-    public Part<T> setEndPoint(Point endPoint) {
+    public Picker<T> setEndPoint(Point endPoint) {
         this.endPoint = endPoint;
         return this;
     }

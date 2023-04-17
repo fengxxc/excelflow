@@ -1,5 +1,7 @@
 package com.github.fengxxc.model;
 
+import org.apache.poi.ss.util.CellReference;
+
 import java.util.List;
 
 /**
