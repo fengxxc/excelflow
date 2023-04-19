@@ -25,6 +25,8 @@ public class Picker<T> {
 
     private Class<T> object;
 
+    private Consumer<T> onPickCallback;
+
     private Picker() {
     }
 
@@ -136,6 +138,15 @@ public class Picker<T> {
 
     public Picker<T> setEndPoint(Point endPoint) {
         this.endPoint = endPoint;
+        return this;
+    }
+
+    public Consumer<T> getOnPickCallback() {
+        return onPickCallback;
+    }
+
+    public Picker<T> onPick(Consumer<T> onPickCallback) {
+        this.onPickCallback = onPickCallback;
         return this;
     }
 }

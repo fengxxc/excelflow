@@ -45,12 +45,15 @@ public class ExcelFlowTest {
                             .iterative(true)
                             .foward(Foward.Down)
                             .setStepLength(1)
+                            .onPick(obj -> {
+                                System.out.println("onPickerPick");
+                                System.out.println(obj);
+                            })
             ).onBeforePick(efCell -> {
                 System.out.println("onCell");
                 System.out.println(efCell.toString());
             }).onPick((pickerId, object) -> {
                 System.out.println("onPick");
-                // System.out.println(pickerId);
                 System.out.println(object);
             }).proccess();
 

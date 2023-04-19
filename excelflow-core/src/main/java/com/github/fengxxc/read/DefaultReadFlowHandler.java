@@ -86,7 +86,14 @@ public abstract class DefaultReadFlowHandler {
 
             if (isArriveEndPoint(cellReference, picker)) {
                 /* beanWrapper completed */
-                pickCallback.accept(picker.getId(), beanWrapper.getRootInstance());
+                Consumer pickerPickCallback = cellMapper.getPicker().getOnPickCallback();
+                Object obj = beanWrapper.getRootInstance();
+                if (pickerPickCallback != null) {
+                    pickerPickCallback.accept(obj);
+                }
+                if (pickCallback != null) {
+                    pickCallback.accept(picker.getId(), obj);
+                }
                 if (!setLastValIfNull) {
                     pickObjCache.replace(picker, null);
                 }
