@@ -45,7 +45,7 @@ public abstract class ExcelReader {
             Point endPoint = null;
             for (int j = 0; j < picker.getCellMappers().size(); j++) {
                 CellMapper cellMapper = (CellMapper) picker.getCellMappers().get(j);
-                cellMapper.setPart(picker);
+                cellMapper.setPicker(picker);
                 endPoint = ExcelFlowUtils.maxIn2D(cellMapper.getPoint(), endPoint);
                 int top = foward == Foward.Up ? 0 : cellMapper.getPoint().Y;
                 int right = foward == Foward.Right ? Integer.MAX_VALUE : cellMapper.getPoint().X;

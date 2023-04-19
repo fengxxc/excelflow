@@ -26,7 +26,6 @@ public class CellMappersTest implements Serializable {
         final CellMappers<NobelPrize> mappers = new CellMappers<>();
         mappers
                 .cell("A2").as(NobelPrize::getRanking)
-                .cell("A2").as(NobelPrize::getRanking)
                 .cell("B2").as(NobelPrize::getUniversity)
                 .cell("C2").as(NobelPrize::getCountry)
                 .cell("D2").as(NobelPrize::getTotal)
@@ -38,7 +37,7 @@ public class CellMappersTest implements Serializable {
                 .cell("J2").as(NobelPrize::getLiterature)
                 .cell("K2").as(NobelPrize::getPeace)
                 ;
-        final List<CellMapper<NobelPrize>> mapperList = mappers.getMappers();
+        final List<CellMapper<NobelPrize, ?>> mapperList = mappers.getMappers();
         System.out.println(Arrays.toString(mapperList.toArray()));
 
     }

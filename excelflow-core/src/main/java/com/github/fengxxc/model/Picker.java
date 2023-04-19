@@ -15,7 +15,7 @@ public class Picker<T> {
     private int id = -1;
     // private int sheetAt = -1;
     private String sheet;
-    private List<CellMapper<T>> cellMappers;
+    private List<CellMapper<T, ?>> cellMappers;
     private Boolean iterative = false;
     private Foward foward = Foward.Down;
     private int stepLength = 1;
@@ -67,12 +67,12 @@ public class Picker<T> {
         return this;
     }
 
-    public List<CellMapper<T>> getCellMappers() {
+    public List<CellMapper<T, ?>> getCellMappers() {
         return cellMappers;
     }
 
-    public Picker<T> setCellMappers(CellMapper<T>... cellMappers) {
-        final ArrayList<CellMapper<T>> mappers = new ArrayList<>(Arrays.asList(cellMappers));
+    public Picker<T> cellMap(CellMapper<T, ?>... cellMappers) {
+        final ArrayList<CellMapper<T, ?>> mappers = new ArrayList<>(Arrays.asList(cellMappers));
         this.cellMappers = mappers;
         return this;
     }
@@ -80,7 +80,7 @@ public class Picker<T> {
     public Picker<T> cellMap(Consumer<CellMappers<T>> func) {
         final CellMappers<T> mapper = new CellMappers<T>();
         func.accept(mapper);
-        final List<CellMapper<T>> mappers = mapper.getMappers();
+        final List<CellMapper<T, ?>> mappers = mapper.getMappers();
         this.cellMappers = mappers;
         return this;
     }

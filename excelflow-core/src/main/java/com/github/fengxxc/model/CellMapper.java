@@ -2,49 +2,57 @@ package com.github.fengxxc.model;
 
 import com.github.fengxxc.util.AsFunction;
 import com.github.fengxxc.util.ReflectUtils;
+import org.apache.commons.math3.util.Pair;
 import org.apache.poi.ss.util.CellReference;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Function;
 
 /**
  * @author fengxxc
  * @date 2023-04-01
  */
-public class CellMapper<T> implements Comparable<CellMapper<T>> {
+public class CellMapper<T, R> implements Comparable<CellMapper<T, R>> {
     private Picker<T> picker;
 
     private Point point;
     private String objectProperty;
-    private CellType type;
-    private String format;
+    private Class<?> objectPropertyType;
+    private Function<R, R> valFunc;
 
     private CellMapper() {
     }
 
-    public static <T> CellMapper<T> of(Point point) {
+    public static <T, R> CellMapper<T, R> of(Point point) {
         return new CellMapper().setPoint(point);
     }
 
-    public static <T> CellMapper<T> of(int y, int x) {
+    public static <T, R> CellMapper<T, R> of(int y, int x) {
         return of(Point.of(y, x));
     }
 
-    public static <T> CellMapper<T> of(String colRef, int rowRef) {
+    public static <T, R> CellMapper<T, R> of(String colRef, int rowRef) {
         final int x = CellReference.convertColStringToIndex(colRef);
         return of(rowRef - 1, x);
     }
 
-    public static <T> CellMapper<T> of(String cellRef) {
+    public static <T, R> CellMapper<T, R> of(String cellRef) {
         final Point point = Point.of(cellRef);
         return of(point);
     }
 
-    public Picker getPart() {
+    public static <T, R> CellMapper<T, R> reOf(CellMapper<T, ?> cellMapper) {
+        return new CellMapper<T, R>()
+                .setPoint(cellMapper.getPoint())
+                .setPicker(cellMapper.getPicker());
+    }
+
+    public Picker getPicker() {
         return picker;
     }
 
-    public CellMapper setPart(Picker parentBunchs) {
-        this.picker = parentBunchs;
+    public CellMapper setPicker(Picker picker) {
+        this.picker = picker;
         return this;
     }
 
@@ -66,37 +74,36 @@ public class CellMapper<T> implements Comparable<CellMapper<T>> {
         return this;
     }
 
-    public CellMapper<T> as(AsFunction<T, ?> func) {
+    public CellMapper<T, R> as(AsFunction<T, R> func) {
         String propName = null;
+        Pair<String, Class> pair = null;
         try {
-            propName = ReflectUtils.methodToPropertyName(func);
+            pair = ReflectUtils.parseLambdaMethod(func);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        this.objectProperty = propName;
+        this.objectProperty = pair.getFirst();
+        this.objectPropertyType = pair.getSecond();
         return this;
     }
 
-    public CellType getType() {
-        return type;
+    public Function<R, R> val() {
+        return valFunc;
     }
 
-    public CellMapper setType(CellType type) {
-        this.type = type;
+    public CellMapper<T, R> val(Function<R, R> valFunc) {
+        this.valFunc = valFunc;
         return this;
     }
 
-    public String getFormat() {
-        return format;
-    }
-
-    public CellMapper setFormat(String format) {
-        this.format = format;
-        return this;
+    public Class<?> getObjectPropertyType() {
+        return objectPropertyType;
     }
 
     @Override
@@ -115,11 +122,8 @@ public class CellMapper<T> implements Comparable<CellMapper<T>> {
     @Override
     public String toString() {
         return "CellMapper{" +
-                // "parentBunch=" + parentBunch +
                 ", point=" + point +
                 ", objectProperty='" + objectProperty + '\'' +
-                ", type=" + type +
-                ", format='" + format + '\'' +
                 '}';
     }
 }

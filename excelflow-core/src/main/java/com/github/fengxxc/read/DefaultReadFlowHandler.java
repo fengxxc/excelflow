@@ -2,6 +2,7 @@ package com.github.fengxxc.read;
 
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import com.github.fengxxc.model.*;
+import com.github.fengxxc.util.ReflectUtils;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.TypeMismatchException;
@@ -13,6 +14,10 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * @author fengxxc
+ * @date 2023-04-17
+ */
 public abstract class DefaultReadFlowHandler {
     protected String sheetName;
     private SharedStringsTable sst;
@@ -46,7 +51,7 @@ public abstract class DefaultReadFlowHandler {
         beforePickCallback.accept(efCell);
 
         for (CellMapper cellMapper : searchCellMappers) {
-            Picker picker = cellMapper.getPart();
+            Picker picker = cellMapper.getPicker();
             if (!picker.getSheet().equals(this.sheetName)) {
                 continue;
             }
@@ -61,16 +66,26 @@ public abstract class DefaultReadFlowHandler {
                 pickObjCache.put(picker, beanWrapper);
             }
 
-            // beanWrapper not complete, make property
+            /* beanWrapper not complete, make property */
+            Object val = formattedValue;
+            // convert property type
+            Class propertyType = cellMapper.getObjectPropertyType();
+            val = ReflectUtils.convertValueByClassType(formattedValue, val, propertyType);
+
+            if (cellMapper.val() != null) {
+                // apply customer val function
+                val = cellMapper.val().apply(val);
+            }
+
             try {
-                setFieldValue(beanWrapper, cellMapper.getObjectProperty(), formattedValue);
+                setFieldValue(beanWrapper, cellMapper.getObjectProperty(), val);
             } catch (TypeMismatchException e) {
                 throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type.");
                 // e.printStackTrace();
             }
 
             if (isArriveEndPoint(cellReference, picker)) {
-                // beanWrapper completed
+                /* beanWrapper completed */
                 pickCallback.accept(picker.getId(), beanWrapper.getRootInstance());
                 if (!setLastValIfNull) {
                     pickObjCache.replace(picker, null);
