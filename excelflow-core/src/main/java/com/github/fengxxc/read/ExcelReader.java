@@ -26,6 +26,7 @@ public abstract class ExcelReader {
     protected Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap = new HashMap<>();
     protected Consumer<EFCell> beforePickCallback;
     protected BiConsumer<Integer, Object> pickCallback;
+    protected BiConsumer<String, String> mergeCellCallback;
 
     public abstract ExcelReader read(InputStream is) throws IOException, OpenXML4JException;
 
@@ -75,6 +76,11 @@ public abstract class ExcelReader {
 
     public ExcelReader onPick(BiConsumer<Integer, Object> pickCallback) {
         this.pickCallback = pickCallback;
+        return this;
+    }
+
+    public ExcelReader onMergeCell(BiConsumer<String, String> mergeCellCallback) {
+        this.mergeCellCallback = mergeCellCallback;
         return this;
     }
 }

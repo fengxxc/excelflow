@@ -46,7 +46,7 @@ public class ExcelXlsxReader extends ExcelReader {
         final DataFormatter dataFormatter = new DataFormatter();
         // ComXSSFReader reader = new ComXSSFReader(sheet, handler);
         XMLReader parser = XMLHelper.newXMLReader();
-        parser.setContentHandler(new XSSFSheetXMLHandler(stylesTable, null, sst, handler, dataFormatter, false));
+        parser.setContentHandler(new ExcelFlowXlsxHandler(stylesTable, null, sst, handler, dataFormatter, false));
 
         parser.parse(new InputSource(sheet));
     }
