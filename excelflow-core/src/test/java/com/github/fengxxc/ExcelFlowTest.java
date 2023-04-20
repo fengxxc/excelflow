@@ -24,7 +24,6 @@ public class ExcelFlowTest {
 
     @Test
     public void readXlsx() throws IOException, ParserConfigurationException, OpenXML4JException, SAXException {
-        // new ArrayList<Integer>().stream().map()
         try(InputStream is = ExcelFlow.class.getResourceAsStream("/excel/test1.xlsx")) {
             ExcelFlow.read(is).picks(
                     Picker.of(NobelPrize.class)
@@ -46,15 +45,12 @@ public class ExcelFlowTest {
                             .foward(Foward.Down)
                             .setStepLength(1)
                             .onPick(obj -> {
-                                System.out.println("onPickerPick");
                                 System.out.println(obj);
                             })
             ).onBeforePick(efCell -> {
-                System.out.println("onCell");
-                System.out.println(efCell.toString());
+                // TODO
             }).onPick((pickerId, object) -> {
-                System.out.println("onPick");
-                System.out.println(object);
+                // TODO
             }).proccess();
 
         }
