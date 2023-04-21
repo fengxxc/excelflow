@@ -45,7 +45,9 @@ public class ExcelFlowXlsxHandler extends XSSFSheetXMLHandler {
             String ref = attributes.getValue("ref");
             // System.out.println(ref);
             String[] split = ref.split(":");
-            mergeCellCallback.accept(split[0], split[1]);
+            if (mergeCellCallback != null) {
+                mergeCellCallback.accept(split[0], split[1]);
+            }
         }
     }
 }
