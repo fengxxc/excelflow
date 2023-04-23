@@ -22,6 +22,7 @@ public abstract class DefaultReadFlowHandler {
     protected String sheetName;
     private SharedStringsTable sst;
     private Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap;
+    private Map<Integer, Picker> pickerIdMap = new HashMap<>();
     private Consumer<EFCell> beforePickCallback;
     private final BiConsumer<Integer, Object> pickCallback;
     private Map<Picker, BeanWrapperImpl> pickObjCache = new HashMap<>();
@@ -29,10 +30,11 @@ public abstract class DefaultReadFlowHandler {
     // when this cell value is null, set last value as this value? TODO get from config
     private boolean setLastValIfNull = false;
 
-    public DefaultReadFlowHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
+    public DefaultReadFlowHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
         this.sheetName = sheetName;
         this.sst = sst;
         this.sheet2CellTreeMap = sheet2CellTreeMap;
+        this.pickerIdMap = pickerIdMap;
         this.beforePickCallback = beforePickCallback;
         this.pickCallback = pickCallback;
     }
@@ -51,7 +53,8 @@ public abstract class DefaultReadFlowHandler {
         beforePickCallback.accept(efCell);
 
         for (CellMapper cellMapper : searchCellMappers) {
-            Picker picker = cellMapper.getPicker();
+            int pickerId = cellMapper.getParentId();
+            Picker picker = (Picker) this.pickerIdMap.get(pickerId);
             if (!picker.getSheet().equals(this.sheetName)) {
                 continue;
             }
@@ -86,7 +89,7 @@ public abstract class DefaultReadFlowHandler {
 
             if (isArriveEndPoint(cellReference, picker)) {
                 /* beanWrapper completed */
-                Consumer pickerPickCallback = cellMapper.getPicker().getOnPickCallback();
+                Consumer pickerPickCallback = picker.getOnPickCallback();
                 Object obj = beanWrapper.getRootInstance();
                 if (pickerPickCallback != null) {
                     pickerPickCallback.accept(obj);

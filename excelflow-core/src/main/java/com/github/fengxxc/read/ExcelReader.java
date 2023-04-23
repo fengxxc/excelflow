@@ -1,9 +1,8 @@
 package com.github.fengxxc.read;
 
+import com.github.fengxxc.ExcelHandler;
+import com.github.fengxxc.exception.ExcelFlowConfigException;
 import com.github.fengxxc.model.*;
-import com.github.fengxxc.model.Point;
-import com.github.fengxxc.model.RTreeNode;
-import com.github.fengxxc.model.Rect;
 import com.github.fengxxc.util.ExcelFlowUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -21,9 +20,8 @@ import java.util.function.Consumer;
  * @author fengxxc
  * @date 2023-04-01
  */
-public abstract class ExcelReader {
-
-    protected Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap = new HashMap<>();
+public abstract class ExcelReader extends ExcelHandler<ExcelReader> {
+    protected Map<Integer, Picker> pickerIdMap = new HashMap<>();
     protected Consumer<EFCell> beforePickCallback;
     protected BiConsumer<Integer, Object> pickCallback;
     protected BiConsumer<String, String> mergeCellCallback;
@@ -36,23 +34,22 @@ public abstract class ExcelReader {
             if (picker.getId() == -1) {
                 picker.setId(i);
             }
+            if (pickerIdMap.containsKey(picker.getId())) {
+                throw new ExcelFlowConfigException("the pick` id '" + picker.getId() + "' must be unique.");
+            }
+            pickerIdMap.put(picker.getId(), picker);
             final String sheetName = picker.getSheet();
             /*if (sheetName == null || "".equals(sheetName)) {
                 throw new ExcelPortConfigException("can not get sheetIndex or sheetName, bunch id: " + bunch.getId());
             }*/
-            // int left = Integer.MAX_VALUE, right = 0, top = Integer.MAX_VALUE, bottom = 0;
             int length = 0;
             final Foward foward = picker.getFoward();
             Point endPoint = null;
             for (int j = 0; j < picker.getCellMappers().size(); j++) {
                 CellMapper cellMapper = (CellMapper) picker.getCellMappers().get(j);
-                cellMapper.setPicker(picker);
+                cellMapper.setParentId(picker.getId());
                 endPoint = ExcelFlowUtils.maxIn2D(cellMapper.getPoint(), endPoint);
-                int top = foward == Foward.Up ? 0 : cellMapper.getPoint().Y;
-                int right = foward == Foward.Right ? Integer.MAX_VALUE : cellMapper.getPoint().X;
-                int bottom = foward == Foward.Down ? Integer.MAX_VALUE : cellMapper.getPoint().Y;
-                int left = foward == Foward.Left ? 0 : cellMapper.getPoint().X;
-                final Rect rect = Rect.of(Point.of(top, right), Point.of(bottom, left));
+                final Rect rect = ExcelFlowUtils.getMaxRect(foward, cellMapper.getPoint());
                 final RTreeNode<CellMapper> rTreeNode = new RTreeNode<CellMapper>(rect).addEntry(cellMapper);
                 final RTreeNode<CellMapper> gridRTreeNode = this.sheet2CellTreeMap.get(sheetName);
                 if (gridRTreeNode == null) {
@@ -65,9 +62,6 @@ public abstract class ExcelReader {
         }
         return this;
     }
-
-    public abstract void proccess() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException;
-
 
     public ExcelReader onBeforePick(Consumer<EFCell> cellCallback) {
         this.beforePickCallback = cellCallback;

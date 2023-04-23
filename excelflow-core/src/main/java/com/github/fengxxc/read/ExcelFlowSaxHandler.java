@@ -22,8 +22,8 @@ import java.util.function.Consumer;
 public class ExcelFlowSaxHandler<R> extends DefaultReadFlowHandler implements XSSFSheetXMLHandler.SheetContentsHandler {
 
 
-    public ExcelFlowSaxHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
-        super(sheetName, sst, sheet2CellTreeMap, beforePickCallback, pickCallback);
+    public ExcelFlowSaxHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
+        super(sheetName, sst, sheet2CellTreeMap, pickerIdMap, beforePickCallback, pickCallback);
     }
 
     @Override

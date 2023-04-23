@@ -1,9 +1,6 @@
 package com.github.fengxxc.read;
 
-import com.github.fengxxc.model.CellMapper;
-import com.github.fengxxc.model.EFCell;
-import com.github.fengxxc.model.Point;
-import com.github.fengxxc.model.RTreeNode;
+import com.github.fengxxc.model.*;
 import org.apache.poi.hssf.eventusermodel.*;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
@@ -38,8 +35,8 @@ public class ExcelFlowXlsHandler extends DefaultReadFlowHandler implements HSSFL
     private int formulaRow;
     private short formulaColumn;
 
-    public ExcelFlowXlsHandler(POIFSFileSystem poifsFileSystem, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) throws IOException {
-        super(null, null, sheet2CellTreeMap, beforePickCallback, pickCallback);
+    public ExcelFlowXlsHandler(POIFSFileSystem poifsFileSystem, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) throws IOException {
+        super(null, null, sheet2CellTreeMap, pickerIdMap, beforePickCallback, pickCallback);
 
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);

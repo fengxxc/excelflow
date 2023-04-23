@@ -42,7 +42,7 @@ public class ExcelXlsxReader extends ExcelReader {
     }
 
     private void processSheet(String sheetName, InputStream sheet, SharedStringsTable sst, StylesTable stylesTable) throws ParserConfigurationException, SAXException, IOException {
-        ExcelFlowSaxHandler handler = new ExcelFlowSaxHandler(sheetName, sst, this.sheet2CellTreeMap, beforePickCallback, pickCallback);
+        ExcelFlowSaxHandler handler = new ExcelFlowSaxHandler(sheetName, sst, this.sheet2CellTreeMap, this.pickerIdMap, beforePickCallback, pickCallback);
         final DataFormatter dataFormatter = new DataFormatter();
         // ComXSSFReader reader = new ComXSSFReader(sheet, handler);
         XMLReader parser = XMLHelper.newXMLReader();

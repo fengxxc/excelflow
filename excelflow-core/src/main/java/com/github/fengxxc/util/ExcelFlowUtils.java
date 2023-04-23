@@ -1,6 +1,8 @@
 package com.github.fengxxc.util;
 
+import com.github.fengxxc.model.Foward;
 import com.github.fengxxc.model.Point;
+import com.github.fengxxc.model.Rect;
 
 /**
  * @author fengxxc
@@ -33,5 +35,14 @@ public class ExcelFlowUtils {
             return point1;
         }
         return point2;
+    }
+
+    public static Rect getMaxRect(Foward foward, Point point) {
+        int top = foward == Foward.Up ? 0 : point.Y;
+        int right = foward == Foward.Right ? Integer.MAX_VALUE : point.X;
+        int bottom = foward == Foward.Down ? Integer.MAX_VALUE : point.Y;
+        int left = foward == Foward.Left ? 0 : point.X;
+        final Rect rect = Rect.of(Point.of(top, right), Point.of(bottom, left));
+        return rect;
     }
 }
