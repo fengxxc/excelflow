@@ -61,7 +61,7 @@ public abstract class DefaultReadFlowHandler {
             BeanWrapperImpl beanWrapper = pickObjCache.get(picker);
             if (beanWrapper == null) {
                 try {
-                    beanWrapper = new BeanWrapperImpl(createInstance(picker.getObject()));
+                    beanWrapper = new BeanWrapperImpl(ReflectUtils.createInstance(picker.getObject()));
                 } catch (InstantiationException| IllegalAccessException| InvocationTargetException | NoSuchMethodException e) {
                     throw new ExcelFlowReflectionException("can not create class '" + picker.getObject().getName() + "' instance.");
                     // e.printStackTrace();
@@ -72,7 +72,7 @@ public abstract class DefaultReadFlowHandler {
             /* beanWrapper not complete, make property */
             Object val = formattedValue;
             // convert property type
-            Class propertyType = cellMapper.getObjectPropertyType();
+            Class propertyType = cellMapper.getObjectPropertyReturnType();
             val = ReflectUtils.convertValueByClassType(formattedValue, val, propertyType);
 
             if (cellMapper.val() != null) {
@@ -81,7 +81,7 @@ public abstract class DefaultReadFlowHandler {
             }
 
             try {
-                setFieldValue(beanWrapper, cellMapper.getObjectProperty(), val);
+                ReflectUtils.setFieldValue(beanWrapper, cellMapper.getObjectProperty(), val);
             } catch (TypeMismatchException e) {
                 throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type.");
                 // e.printStackTrace();
@@ -115,18 +115,6 @@ public abstract class DefaultReadFlowHandler {
         return arriveEndPoint;
     }
 
-    private static <T> T createInstance(Class<T> object, Object... args) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Class<?>[] parameterTypes = new Class<?>[args.length];
-        for (int i = 0; i < args.length; i++) {
-            parameterTypes[i] = args[i].getClass();
-        }
-        T newObj = null;
-        newObj = object.getDeclaredConstructor(parameterTypes).newInstance();
-        return newObj;
-    }
 
-    public static void setFieldValue(BeanWrapperImpl beanWrapper, String fieldName, Object fieldValue) {
-        beanWrapper.setPropertyValue(fieldName, fieldValue);
-    }
 
 }

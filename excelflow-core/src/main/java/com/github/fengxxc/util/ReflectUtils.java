@@ -2,9 +2,14 @@ package com.github.fengxxc.util;
 
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import org.apache.commons.math3.util.Pair;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EnumMap;
@@ -131,5 +136,75 @@ public class ReflectUtils {
         }
 
         return val;
+    }
+
+    public static void setPropertyValue(Object obj, String propertyName, Object propertyValue) throws NoSuchFieldException, IllegalAccessException, InvocationTargetException {
+        if (obj == null || propertyName == null || "".equals(propertyName)) {
+            return;
+        }
+        Class<?> clazz = obj.getClass();
+        String UpperCamelCasePropName = propertyName.length() > 1 ? propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1) : propertyName.toUpperCase();
+        Method method = null;
+        try {
+            method = clazz.getMethod("set" + UpperCamelCasePropName, propertyValue.getClass());
+        } catch (NoSuchMethodException e) {
+            Field field = clazz.getDeclaredField(propertyName);
+            field.setAccessible(true);
+            field.set(obj, propertyValue);
+            return;
+        }
+        method.invoke(obj, propertyValue);
+    }
+
+    public static Object getPropertyValue(Object object, String propertyName) throws NoSuchFieldException, IllegalAccessException, InvocationTargetException {
+        if (object == null || propertyName == null || "".equals(propertyName)) {
+            return null;
+        }
+        Class<?> clazz = object.getClass();
+        String UpperCamelCasePropName = propertyName.length() > 1 ? propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1) : propertyName.toUpperCase();
+        Method method = null;
+        try {
+            method = clazz.getMethod("get" + UpperCamelCasePropName);
+        } catch (NoSuchMethodException e) {
+            Field field = clazz.getDeclaredField(propertyName);
+            field.setAccessible(true);
+            return field.get(object);
+        }
+        return method.invoke(object);
+    }
+
+    public static <T> T createInstance(Class<T> object, Object... args) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Class<?>[] parameterTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++) {
+            parameterTypes[i] = args[i].getClass();
+        }
+        T newObj = null;
+        newObj = object.getDeclaredConstructor(parameterTypes).newInstance();
+        return newObj;
+    }
+
+    public static void setFieldValue(BeanWrapperImpl beanWrapper, String fieldName, Object fieldValue) {
+        beanWrapper.setPropertyValue(fieldName, fieldValue);
+    }
+
+    public static Object getFieldValue(BeanWrapperImpl beanWrapper, String fieldName) {
+        return beanWrapper.getPropertyValue(fieldName);
+    }
+
+    public static Object getFieldValueByCglib(Object obj, String fieldName) {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(obj.getClass());
+        enhancer.setCallback(new MethodInterceptor() {
+            @Override
+            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                if (method.getName().startsWith("get") && method.getName().toLowerCase().contains(fieldName.toLowerCase())) {
+                    return methodProxy.invokeSuper(o, objects);
+                } else {
+                    return null;
+                }
+            }
+        });
+        Object result = enhancer.create();
+        return result;
     }
 }

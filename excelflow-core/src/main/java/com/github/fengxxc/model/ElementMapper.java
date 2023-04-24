@@ -1,24 +1,21 @@
 package com.github.fengxxc.model;
 
-import com.github.fengxxc.EventType;
 import com.github.fengxxc.util.AsFunction;
 import com.github.fengxxc.util.ReflectUtils;
 import org.apache.commons.math3.util.Pair;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
  * @author fengxxc
  * @date 2023-04-22
  */
-public abstract class ElementMapper<T, R> {
+public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T, R>> {
     private int parentId;
     private Point point;
     private String objectProperty;
-    private Class<?> objectPropertyType;
+    private Class<?> objectPropertyReturnType;
     private Function<R, R> valFunc;
 
 
@@ -61,7 +58,7 @@ public abstract class ElementMapper<T, R> {
             e.printStackTrace();
         }
         this.objectProperty = pair.getFirst();
-        this.objectPropertyType = pair.getSecond();
+        this.objectPropertyReturnType = pair.getSecond();
     }
 
     public Function<R, R> val() {
@@ -72,7 +69,20 @@ public abstract class ElementMapper<T, R> {
         this.valFunc = valFunc;
     }
 
-    public Class<?> getObjectPropertyType() {
-        return objectPropertyType;
+    public Class<?> getObjectPropertyReturnType() {
+        return objectPropertyReturnType;
+    }
+
+    @Override
+    public int compareTo(ElementMapper o) {
+        /*final int sheetDiff = this.getParent().getSheetAt() - o.getParentBunch().getSheetAt();
+        if (sheetDiff != 0) {
+            return sheetDiff;
+        }*/
+        final int yDiff = this.getPoint().Y - o.getPoint().Y;
+        if (yDiff != 0) {
+            return ((int) yDiff);
+        }
+        return ((int) (this.getPoint().X - o.getPoint().X));
     }
 }

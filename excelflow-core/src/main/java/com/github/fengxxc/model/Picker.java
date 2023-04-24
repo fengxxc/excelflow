@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  */
 public class Picker<T> extends JustWe<Picker<T>, T> {
     // private List<CellMapper<T, ?>> cellMappers;
-    private List<? extends ElementMapper<T, ?>> cellMappers;
+
 
     private Picker() {
     }
@@ -36,17 +36,13 @@ public class Picker<T> extends JustWe<Picker<T>, T> {
         final CellMappers<T> mapper = new CellMappers<T>();
         func.accept(mapper);
         final List<CellMapper<T, ?>> mappers = mapper.getMappers();
-        this.cellMappers = mappers;
+        super.setMappers(mappers);
         return this;
-    }
-
-    public List<? extends ElementMapper<T, ?>> getCellMappers() {
-        return cellMappers;
     }
 
     public Picker<T> cellMap(CellMapper<T, ?>... cellMappers) {
         final ArrayList<CellMapper<T, ?>> mappers = new ArrayList<>(Arrays.asList(cellMappers));
-        this.cellMappers = mappers;
+        super.setMappers(mappers);
         return this;
     }
 

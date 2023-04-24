@@ -1,7 +1,7 @@
 ```json
 {
     "config": {
-        "validateStrategy": null // (gridValue) => {validate: Boolean, message: String}
+        "validateStrategy": null // (cellValue) => {validate: Boolean, message: String}
     },
     // pickers
     "pickers": [{

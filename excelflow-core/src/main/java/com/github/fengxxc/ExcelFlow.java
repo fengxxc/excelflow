@@ -3,13 +3,13 @@ package com.github.fengxxc;
 import com.github.fengxxc.read.ExcelReader;
 import com.github.fengxxc.read.ExcelXlsReader;
 import com.github.fengxxc.read.ExcelXlsxReader;
+import com.github.fengxxc.write.ExcelWriter;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.FileMagic;
-import org.apache.poi.xssf.eventusermodel.XSSFReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author fengxxc
@@ -34,9 +34,9 @@ public class ExcelFlow {
 
     }
 
-    /*public static ExcelWrite write(OutputStream os) {
-        // TODO
-        return null;
-    }*/
+    public static ExcelWriter write(OutputStream os) {
+        ExcelWriter excelWriter = new ExcelWriter(os);
+        return excelWriter;
+    }
 
 }

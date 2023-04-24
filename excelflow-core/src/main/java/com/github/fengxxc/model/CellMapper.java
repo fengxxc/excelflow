@@ -6,7 +6,7 @@ import org.apache.poi.ss.util.CellReference;
  * @author fengxxc
  * @date 2023-04-01
  */
-public class CellMapper<T, R> extends ElementMapper<T, R> implements Comparable<CellMapper<T, R>> {
+public class CellMapper<T, R> extends ElementMapper<T, R> {
 
 
     private CellMapper() {
@@ -40,18 +40,7 @@ public class CellMapper<T, R> extends ElementMapper<T, R> implements Comparable<
     }
 
 
-    @Override
-    public int compareTo(CellMapper o) {
-        /*final int sheetDiff = this.getParentBunch().getSheetAt() - o.getParentBunch().getSheetAt();
-        if (sheetDiff != 0) {
-            return sheetDiff;
-        }*/
-        final int yDiff = this.getPoint().Y - o.getPoint().Y;
-        if (yDiff != 0) {
-            return ((int) yDiff);
-        }
-        return ((int) (this.getPoint().X - o.getPoint().X));
-    }
+
 
     @Override
     public String toString() {

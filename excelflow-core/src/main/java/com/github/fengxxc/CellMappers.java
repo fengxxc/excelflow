@@ -1,20 +1,17 @@
 package com.github.fengxxc;
 
 import com.github.fengxxc.model.CellMapper;
-import com.github.fengxxc.model.CellType;
-import com.github.fengxxc.model.ElementMapper;
 import com.github.fengxxc.model.Point;
 import com.github.fengxxc.util.AsFunction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * @author fengxxc
  * @date 2023-04-12
  */
-public class CellMappers<T> implements IMappers<CellMappers<T>, T> {
+public class CellMappers<T> implements BaseMappers<CellMappers<T>, T> {
     private List<CellMapper<T, ?>> mappers = new ArrayList<>();
     private CellMapper<T, ?> current = null;
 
@@ -49,7 +46,7 @@ public class CellMappers<T> implements IMappers<CellMappers<T>, T> {
     }
 
     @Override
-    public <R> Relay<CellMappers<T>, CellMapper<T, R>, T, R> as(AsFunction<T, R> func) {
+    public <R> Relay<CellMappers<T>, CellMapper<T, R>, T, R> prop(AsFunction<T, R> func) {
         assertCurrentNull();
 
         // Java泛型擦除可真是操蛋
@@ -63,7 +60,7 @@ public class CellMappers<T> implements IMappers<CellMappers<T>, T> {
     }
 
     @Override
-    public CellMappers<T> as(String property) {
+    public CellMappers<T> prop(String property) {
         assertCurrentNull();
         current.as(property);
         return this;

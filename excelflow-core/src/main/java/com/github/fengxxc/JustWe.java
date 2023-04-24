@@ -1,9 +1,12 @@
 package com.github.fengxxc;
 
+import com.github.fengxxc.model.ElementMapper;
 import com.github.fengxxc.model.Foward;
 import com.github.fengxxc.model.Point;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -15,7 +18,7 @@ import java.util.function.Consumer;
  * @author fengxxc
  * @date 2023-04-20
  */
-public abstract class JustWe<S, T> {
+public class JustWe<S, T> {
     private int id = -1;
     private Class<T> object;
     // private int sheetAt = -1;
@@ -25,6 +28,8 @@ public abstract class JustWe<S, T> {
     private int stepLength = 1;
     private int stepTotal = -1;
     private Point endPoint;
+    private Collection<? extends ElementMapper<T, ?>> mappers;
+
     private Map<EventType, Consumer<T>> callbacks = new HashMap<>();
 
     public int getId() {
@@ -106,6 +111,14 @@ public abstract class JustWe<S, T> {
     public S setEndPoint(Point endPoint) {
         this.endPoint = endPoint;
         return (S) this;
+    }
+
+    public Collection<? extends ElementMapper<T, ?>> getMappers() {
+        return mappers;
+    }
+
+    public void setMappers(Collection<? extends ElementMapper<T, ?>> mappers) {
+        this.mappers = mappers;
     }
 
     public S addCallback(EventType event, Consumer<T> callback) {
