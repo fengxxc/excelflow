@@ -70,18 +70,18 @@ public abstract class DefaultReadFlowHandler {
             }
 
             /* beanWrapper not complete, make property */
-            Object val = formattedValue;
+            Object value = formattedValue;
             // convert property type
             Class propertyType = cellMapper.getObjectPropertyReturnType();
-            val = ReflectUtils.convertValueByClassType(formattedValue, val, propertyType);
+            value = ReflectUtils.convertValueByClassType(formattedValue, value, propertyType);
 
             if (cellMapper.val() != null) {
-                // apply customer val function
-                val = cellMapper.val().apply(val);
+                // apply customer value function
+                value = cellMapper.val().apply(value);
             }
 
             try {
-                ReflectUtils.setFieldValue(beanWrapper, cellMapper.getObjectProperty(), val);
+                ReflectUtils.setFieldValue(beanWrapper, cellMapper.getObjectProperty(), value);
             } catch (TypeMismatchException e) {
                 throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type.");
                 // e.printStackTrace();

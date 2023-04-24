@@ -9,23 +9,23 @@ import java.util.function.Function;
  * @date 2023-04-22
  */
 public class Relay<S extends BaseMappers<S, T>, M extends ElementMapper<T, R>, T, R> {
-    private S cellMappers;
+    private S mappers;
     private M mapper;
     private Function<R, R> valFunc;
 
-    public Relay(S cellMappers, M mapper) {
-        this.cellMappers = cellMappers;
+    public Relay(S mappers, M mapper) {
+        this.mappers = mappers;
         this.mapper = mapper;
     }
 
     public S cell(String cell) {
-        return this.cellMappers.cell(cell);
+        return this.mappers.cell(cell);
     }
 
     public S val(Function<R, R> func) {
         this.valFunc = func;
         mapper.val(func);
-        return cellMappers;
+        return mappers;
     }
 
     public Function<R, R> getValFunc() {
