@@ -111,7 +111,7 @@ public class ExcelFlowTest {
                     Recorder.of(NobelPrize.class)
                             .source(Arrays.stream(nobelPrizes).iterator())
                             .propMap(propMaps -> propMaps
-                                    .cell("A2").prop(NobelPrize::getCountry)
+                                    .cell("A2").prop(NobelPrize::getCountry).val(country -> country + "🏆")
                                     .cell("B2").prop(NobelPrize::getUniversity)
                                     .cell("C2").prop(NobelPrize::getChemistry)
                                     .cell("D2").prop(NobelPrize::getEconomy)

@@ -107,6 +107,9 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             if (dataWrapper != null) {
                 value = ReflectUtils.getFieldValue(dataWrapper, propMapper.getObjectProperty());
             }
+            if (propMapper.val() != null) {
+                value = propMapper.val().apply(value);
+            }
             Class propertyType = propMapper.getObjectPropertyReturnType();
             // set in excel cell
             Point realPos = getRealPlace(iterationNumn, foward, stepLength, propMapper.getPoint());
