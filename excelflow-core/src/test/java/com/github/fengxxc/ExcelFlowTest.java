@@ -1,7 +1,7 @@
 package com.github.fengxxc;
 
 import com.github.fengxxc.model.Foward;
-import com.github.fengxxc.model.Picker;
+import com.github.fengxxc.read.Picker;
 import com.github.fengxxc.model.NobelPrize;
 import com.github.fengxxc.write.Recorder;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;

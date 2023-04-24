@@ -1,6 +1,6 @@
 package com.github.fengxxc.model;
 
-import org.apache.poi.ss.util.CellReference;
+import com.github.fengxxc.read.CellMapper;
 
 import java.util.List;
 

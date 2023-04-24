@@ -1,5 +1,6 @@
-package com.github.fengxxc.model;
+package com.github.fengxxc;
 
+import com.github.fengxxc.model.Point;
 import com.github.fengxxc.util.AsFunction;
 import com.github.fengxxc.util.ReflectUtils;
 import org.apache.commons.math3.util.Pair;

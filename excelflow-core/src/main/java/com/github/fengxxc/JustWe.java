@@ -1,12 +1,10 @@
 package com.github.fengxxc;
 
-import com.github.fengxxc.model.ElementMapper;
 import com.github.fengxxc.model.Foward;
 import com.github.fengxxc.model.Point;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 

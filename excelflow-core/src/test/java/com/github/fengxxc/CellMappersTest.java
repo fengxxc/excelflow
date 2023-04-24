@@ -1,6 +1,7 @@
 package com.github.fengxxc;
 
-import com.github.fengxxc.model.CellMapper;
+import com.github.fengxxc.read.CellMapper;
+import com.github.fengxxc.read.CellMappers;
 import com.github.fengxxc.model.NobelPrize;
 import org.junit.Test;
 

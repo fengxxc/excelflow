@@ -1,11 +1,10 @@
-package com.github.fengxxc;
+package com.github.fengxxc.write;
 
+import com.github.fengxxc.Relay;
+import com.github.fengxxc.BaseMappers;
 import com.github.fengxxc.model.Point;
-import com.github.fengxxc.model.PropMapper;
 import com.github.fengxxc.util.AsFunction;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
 /**

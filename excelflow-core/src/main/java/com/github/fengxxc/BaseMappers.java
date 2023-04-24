@@ -1,11 +1,9 @@
 package com.github.fengxxc;
 
-import com.github.fengxxc.model.ElementMapper;
 import com.github.fengxxc.model.Point;
 import com.github.fengxxc.util.AsFunction;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author fengxxc

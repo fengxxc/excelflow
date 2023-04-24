@@ -1,7 +1,5 @@
 package com.github.fengxxc;
 
-import com.github.fengxxc.model.ElementMapper;
-
 import java.util.function.Function;
 
 /**

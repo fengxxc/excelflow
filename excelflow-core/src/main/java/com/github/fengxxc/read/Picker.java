@@ -1,6 +1,5 @@
-package com.github.fengxxc.model;
+package com.github.fengxxc.read;
 
-import com.github.fengxxc.CellMappers;
 import com.github.fengxxc.EventType;
 import com.github.fengxxc.JustWe;
 
