@@ -1,14 +1,20 @@
 package com.github.fengxxc.read;
 
+import com.github.fengxxc.model.EFCell;
+import com.github.fengxxc.model.RTreeNode;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler;
 import org.apache.poi.xssf.model.Comments;
 import org.apache.poi.xssf.model.SharedStrings;
+import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.model.Styles;
+import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @author fengxxc
@@ -49,5 +55,34 @@ public class ExcelFlowXlsxHandler extends XSSFSheetXMLHandler {
                 mergeCellCallback.accept(split[0], split[1]);
             }
         }
+    }
+
+    /**
+     * @author fengxxc
+     * @date 2023-04-02
+     */
+    public static class SheetSaxHandler<R> extends DefaultReadFlowHandler implements SheetContentsHandler {
+
+        public SheetSaxHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
+            super(sheetName, sst, sheet2CellTreeMap, pickerIdMap, beforePickCallback, pickCallback);
+        }
+
+        @Override
+        public void headerFooter(String text, boolean isHeader, String tagName) {}
+
+        @Override
+        public void endSheet() {}
+
+        @Override
+        public void startRow(int rowNum) {}
+
+        @Override
+        public void endRow(int rowNum) {}
+
+        @Override
+        public void cell(String cellReference, String formattedValue, XSSFComment comment) {
+            cellFlow(cellReference, formattedValue);
+        }
+
     }
 }
