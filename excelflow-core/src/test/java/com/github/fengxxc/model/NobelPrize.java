@@ -1,6 +1,7 @@
 package com.github.fengxxc.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author fengxxc
@@ -119,6 +120,29 @@ public class NobelPrize implements Serializable {
     public NobelPrize setPeace(String peace) {
         this.peace = peace;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NobelPrize that = (NobelPrize) o;
+        return ranking == that.ranking
+                && total == that.total
+                && naturalScienceAwardTotal == that.naturalScienceAwardTotal
+                && physics == that.physics
+                && physiologyOrMedicine == that.physiologyOrMedicine
+                && economy == that.economy
+                && literature == that.literature
+                && Objects.equals(university, that.university)
+                && Objects.equals(country, that.country)
+                && Objects.equals(chemistry, that.chemistry)
+                && Objects.equals(peace, that.peace);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ranking, university, country, total, naturalScienceAwardTotal, physics, chemistry, physiologyOrMedicine, economy, literature, peace);
     }
 
     @Override
