@@ -21,13 +21,21 @@ import java.util.function.Consumer;
  * @date 2023-04-01
  */
 public abstract class ExcelReader implements IExcelHandler<Picker> {
+    private InputStream is;
     protected Map<Integer, Picker> pickerIdMap = new HashMap<>();
     protected Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap = new HashMap<>();
     protected Consumer<EFCell> beforePickCallback;
     protected BiConsumer<Integer, Object> pickCallback;
     protected BiConsumer<String, String> mergeCellCallback;
 
-    public abstract ExcelReader read(InputStream is) throws IOException, OpenXML4JException;
+    public ExcelReader read(InputStream is) throws IOException, OpenXML4JException {
+        this.is = is;
+        return this;
+    }
+
+    public InputStream getInputStream() {
+        return is;
+    }
 
     @Override
     public void accept(Picker... pickers) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException {

@@ -16,17 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ExcelXlsxReader extends ExcelReader {
-    private InputStream is;
-
-    @Override
-    public ExcelReader read(InputStream is) {
-        this.is = is;
-        return this;
-    }
 
     @Override
     public void proccessEnd() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException {
-        OPCPackage pkg = OPCPackage.open(is);
+        OPCPackage pkg = OPCPackage.open(super.getInputStream());
         XSSFReader reader = new XSSFReader(pkg);
         SharedStringsTable sst = reader.getSharedStringsTable();
         final StylesTable stylesTable = reader.getStylesTable();
