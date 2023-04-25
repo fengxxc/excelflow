@@ -6,6 +6,7 @@ import com.github.fengxxc.exception.ExcelFlowConfigException;
 import com.github.fengxxc.model.*;
 import com.github.fengxxc.util.ExcelFlowUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,5 +58,5 @@ public abstract class ExcelReadHandler<T extends JustWe> implements IExcelHandle
     }
 
     @Override
-    public abstract void proccess() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException;
+    public abstract void proccess() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException;
 }

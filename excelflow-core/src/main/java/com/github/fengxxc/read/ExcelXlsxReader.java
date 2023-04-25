@@ -18,17 +18,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ExcelXlsxReader extends ExcelReader {
-    private XSSFReader reader;
+    private InputStream is;
 
     @Override
-    public ExcelReader read(InputStream is) throws IOException, OpenXML4JException {
-        OPCPackage pkg = OPCPackage.open(is);
-        this.reader = new XSSFReader(pkg);
+    public ExcelReader read(InputStream is) {
+        this.is = is;
         return this;
     }
 
     @Override
-    public void proccess() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException {
+    public void proccess() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException {
+        OPCPackage pkg = OPCPackage.open(is);
+        XSSFReader reader = new XSSFReader(pkg);
         SharedStringsTable sst = reader.getSharedStringsTable();
         final StylesTable stylesTable = reader.getStylesTable();
         XSSFReader.SheetIterator sheets = (XSSFReader.SheetIterator) reader.getSheetsData();
