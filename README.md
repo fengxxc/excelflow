@@ -117,3 +117,17 @@ public class WriteTest {
 
 如果运行无误的话，将在输出目录里有个test3.xlsx，它是这样的：
 ![img2](./docs/example/img2.jpg)
+
+是不是很简单呢，ExcelFlow正如其名那样，像流一样操作excel，无论多么复杂的表格任务，一行代码就能搞定
+（当然真写成一行会被同事和未来的自己打死，还是要适当换行 __(:з)∠)_）。
+
+ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook对象写文件，因此你无需担心大Excel爆内存的情况，
+当然POI读Excel2007时解压缩全在内存中完成，如果文件特别大还是会很占内存，如果你有极端场景或对性能有极致追求的话，阿里的 [EasyExcel](https://github.com/alibaba/easyexcel) 更适合你。
+
+## TODO
+- [ ] 读转写一条龙
+- [ ] 对合并单元格的处理
+- [ ] commit的处理
+- [ ] 对形状、图片的处理
+- [ ] 对象注解配置模式
+- [ ] json配置模式
