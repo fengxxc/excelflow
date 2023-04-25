@@ -1,5 +1,7 @@
 package com.github.fengxxc.model;
 
+import com.github.fengxxc.util.ExcelFlowUtils;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -223,8 +225,8 @@ public class RTreeNode<T> {
         final StringBuffer sb = new StringBuffer();
         final Point topRight = this.getRect().getTopRight();
         final Point bottomLeft = this.getRect().getBottomLeft();
-        sb.append(prefix.repeat(level)).append("{\n")
-                .append(prefix.repeat(level+1)).append("topRight: '(").append(topRight.X).append(",").append(topRight.Y).append(")'")
+        sb.append(ExcelFlowUtils.repeatString(prefix, level)).append("{\n")
+                .append(ExcelFlowUtils.repeatString(prefix, level+1)).append("topRight: '(").append(topRight.X).append(",").append(topRight.Y).append(")'")
                 .append(", bottomLeft: '(").append(bottomLeft.X).append(",").append(bottomLeft.Y).append(")'");
         for (int i = 0; i < this.children.length; i++) {
             final RTreeNode<T> child = this.children[i];
@@ -233,19 +235,19 @@ public class RTreeNode<T> {
                     sb.append("\n");
                     break;
                 }
-                sb.append(prefix.repeat(level+1)).append("]\n");
+                sb.append(ExcelFlowUtils.repeatString(prefix, level+1)).append("]\n");
                 break;
             }
             if (i == 0) {
-                sb.append(", \n").append(prefix.repeat(level+1)).append("childen: [\n");
+                sb.append(", \n").append(ExcelFlowUtils.repeatString(prefix, level+1)).append("childen: [\n");
             }
             sb.append(child.rectToJsonString(prefix, level+2));
             if (i == this.children.length - 1) {
-                sb.append(prefix.repeat(level+1)).append("]\n");
+                sb.append(ExcelFlowUtils.repeatString(prefix, level+1)).append("]\n");
             }
 
         }
-        sb.append(prefix.repeat(level)).append("}, \n");
+        sb.append(ExcelFlowUtils.repeatString(prefix, level)).append("}, \n");
         return sb.toString();
     }
 }

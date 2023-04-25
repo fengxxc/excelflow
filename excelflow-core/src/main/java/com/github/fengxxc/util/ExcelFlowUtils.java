@@ -45,4 +45,12 @@ public class ExcelFlowUtils {
         final Rect rect = Rect.of(Point.of(top, right), Point.of(bottom, left));
         return rect;
     }
+
+    public static String repeatString(String string, int repeat) {
+        StringBuffer sb = new StringBuffer(string);
+        for (int i = 0; i < repeat; i++) {
+            sb.append(string);
+        }
+        return sb.toString();
+    }
 }
