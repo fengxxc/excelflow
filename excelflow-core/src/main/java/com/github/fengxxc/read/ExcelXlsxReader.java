@@ -25,7 +25,7 @@ public class ExcelXlsxReader extends ExcelReader {
     }
 
     @Override
-    public void proccess() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException {
+    public void proccessEnd() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException {
         OPCPackage pkg = OPCPackage.open(is);
         XSSFReader reader = new XSSFReader(pkg);
         SharedStringsTable sst = reader.getSharedStringsTable();

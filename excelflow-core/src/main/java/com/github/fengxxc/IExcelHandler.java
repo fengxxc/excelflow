@@ -13,5 +13,5 @@ import java.io.IOException;
  */
 public interface IExcelHandler<T> {
     void accept(T... justUs) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException;
-    void proccess() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException;
+    void proccessEnd() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException;
 }

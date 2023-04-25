@@ -56,7 +56,7 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
     }
 
     @Override
-    public void proccess() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException {
+    public void proccessEnd() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException {
         SXSSFWorkbook workbook = new SXSSFWorkbook(100);
         // workbook.setCompressTempFiles(true);
         this.sheet2RecordersMap.forEach((sheetName, recorderSet) -> {

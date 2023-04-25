@@ -65,7 +65,7 @@ public abstract class ExcelReader implements IExcelHandler<Picker> {
     }
 
     @Override
-    public abstract void proccess() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException;
+    public abstract void proccessEnd() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException;
 
     public ExcelReader picks(Picker... pickers) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException {
         this.accept(pickers);

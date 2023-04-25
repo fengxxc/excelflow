@@ -20,7 +20,7 @@ public class ExcelXlsReader extends ExcelReader {
     }
 
     @Override
-    public void proccess() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException {
+    public void proccessEnd() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException {
         new ExcelFlowXlsHandler(this.poifsFileSystem, this.sheet2CellTreeMap, this.pickerIdMap, this.beforePickCallback, this.pickCallback);
     }
 

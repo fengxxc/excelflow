@@ -53,7 +53,7 @@ public class ExcelFlowTest {
                 // TODO
             }).onPick((pickerId, object) -> {
                 // TODO
-            }).proccess();
+            }).proccessEnd();
 
         }
     }
@@ -88,7 +88,7 @@ public class ExcelFlowTest {
                 System.out.println("onPick");
                 // System.out.println(pickerId);
                 System.out.println(object);
-            }).proccess();
+            }).proccessEnd();
 
         }
     }
@@ -117,7 +117,7 @@ public class ExcelFlowTest {
                                     .cell("D2").prop(NobelPrize::getEconomy)
                             )
                             // .setStepLength(2)
-            ).proccess();
+            ).proccessEnd();
         }
     }
 }
