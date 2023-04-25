@@ -135,6 +135,7 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             case Right:
                 realPos.Y = point.Y;
                 realPos.X = point.X + iterationNumn * stepLength;
+                break;
             default:
             case Down:
                 realPos.Y = point.Y + iterationNumn * stepLength;
