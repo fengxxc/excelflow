@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 /**
  * @author fengxxc
- * @date 2023-04-22
  */
 public class Relay<S extends BaseMappers<S, T>, M extends ElementMapper<T, R>, T, R> {
     private S mappers;

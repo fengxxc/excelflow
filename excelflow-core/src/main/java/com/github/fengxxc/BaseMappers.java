@@ -7,7 +7,6 @@ import java.util.Collection;
 
 /**
  * @author fengxxc
- * @date 2023-04-22
  */
 public interface BaseMappers<S extends BaseMappers<S, T>, T> {
     S cell(String cellRef);

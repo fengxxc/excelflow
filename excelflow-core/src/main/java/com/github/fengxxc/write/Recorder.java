@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 /**
  * @author fengxxc
- * @date 2023-04-20
  */
 public class Recorder<T> extends JustWe<Recorder<T>, T> implements Comparable<Recorder<T>> {
     private Iterator<T> iterator;

@@ -14,7 +14,6 @@ import java.util.function.Consumer;
  * 当然是能上能下能摘能插的工具人啦~
  *
  * @author fengxxc
- * @date 2023-04-20
  */
 public class JustWe<S, T> {
     private int id = -1;

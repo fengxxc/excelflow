@@ -5,7 +5,6 @@ import java.util.Objects;
 
 /**
  * @author fengxxc
- * @date 2023-04-12
  */
 public class NobelPrize implements Serializable {
     private static final long serialVersionUID = 1L;

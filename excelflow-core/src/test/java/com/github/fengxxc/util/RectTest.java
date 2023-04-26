@@ -8,7 +8,6 @@ import org.junit.Test;
 
 /**
  * @author fengxxc
- * @date 2023-04-11
  */
 public class RectTest {
 

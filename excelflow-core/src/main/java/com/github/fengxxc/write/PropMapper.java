@@ -6,7 +6,6 @@ import org.apache.poi.ss.util.CellReference;
 
 /**
  * @author fengxxc
- * @date 2023-04-22
  */
 public class PropMapper<T, R> extends ElementMapper<T, R> {
     private Object defVal;

@@ -9,7 +9,6 @@ import java.io.IOException;
 
 /**
  * @author fengxxc
- * @date 2023-04-23
  */
 public interface IExcelHandler<T> {
     void accept(T... justUs) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException;

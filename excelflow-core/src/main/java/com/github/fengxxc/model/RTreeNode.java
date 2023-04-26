@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Simple RTree, No balancing
  * @author fengxxc
- * @date 2023-04-08
  */
 public class RTreeNode<T> {
     public static final int DEFAULT_CAPACITY = 3;

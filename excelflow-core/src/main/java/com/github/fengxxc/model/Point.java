@@ -6,7 +6,6 @@ import java.util.Objects;
 
 /**
  * @author fengxxc
- * @date 2023-04-08
  */
 public class Point {
     public int Y;

@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 /**
  * @author fengxxc
- * @date 2023-04-22
  */
 public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T, R>> {
     private int parentId;

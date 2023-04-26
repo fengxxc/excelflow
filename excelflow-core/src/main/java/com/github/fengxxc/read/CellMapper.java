@@ -6,7 +6,6 @@ import org.apache.poi.ss.util.CellReference;
 
 /**
  * @author fengxxc
- * @date 2023-04-01
  */
 public class CellMapper<T, R> extends ElementMapper<T, R> {
 

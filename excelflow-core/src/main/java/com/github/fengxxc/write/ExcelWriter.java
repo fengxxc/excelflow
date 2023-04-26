@@ -20,7 +20,6 @@ import java.util.*;
 
 /**
  * @author fengxxc
- * @date 2023-04-20
  */
 public class ExcelWriter implements IExcelHandler<Recorder> {
     private OutputStream os;

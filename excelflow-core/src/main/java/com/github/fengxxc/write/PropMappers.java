@@ -9,7 +9,6 @@ import java.util.TreeSet;
 
 /**
  * @author fengxxc
- * @date 2023-04-22
  */
 public class PropMappers<T> implements BaseMappers<PropMappers<T>, T> {
     private TreeSet<PropMapper<T, ?>> mappers = new TreeSet<PropMapper<T, ?>>();

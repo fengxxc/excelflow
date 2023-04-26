@@ -18,7 +18,6 @@ import java.util.function.Consumer;
 
 /**
  * @author fengxxc
- * @date 2023-04-01
  */
 public abstract class ExcelReader implements IExcelHandler<Picker> {
     private InputStream is;

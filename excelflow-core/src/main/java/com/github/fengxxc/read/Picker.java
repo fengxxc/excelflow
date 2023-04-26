@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 /**
  * @author fengxxc
- * @date 2023-04-01
  */
 public class Picker<T> extends JustWe<Picker<T>, T> {
     // private List<CellMapper<T, ?>> cellMappers;

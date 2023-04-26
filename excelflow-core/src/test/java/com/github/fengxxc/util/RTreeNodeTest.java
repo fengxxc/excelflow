@@ -9,7 +9,6 @@ import org.junit.Test;
 
 /**
  * @author fengxxc
- * @date 2023-04-11
  */
 public class RTreeNodeTest {
     private static final int CAPACITY = 2;
