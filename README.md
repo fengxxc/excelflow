@@ -1,6 +1,14 @@
 # excelflow
 
 ## 快速开始
+pom.xml添加依赖
+```xml
+<dependency>
+  <groupId>io.github.fengxxc</groupId>
+  <artifactId>excelflow-core</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
 ### 读Excel
 假设有如下excel，需要读取数据并构建Java对象供后续的业务逻辑消费：
 ![img1](./docs/example/img1.jpg)
