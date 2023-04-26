@@ -32,14 +32,15 @@ public class TestRead {
         // 结果
         List<NobelPrize> readResult = new ArrayList<>();
 
-        try(InputStream is = ExcelFlow.class.getResourceAsStream("/excel/test1.xlsx")) {
+        try(InputStream is = new FileOutputStream("/temp/excelflow/export/test1.xlsx")) {
             ExcelFlow.read(is).picks(
                     Picker.of(NobelPrize.class)
                             .sheet("Sheet1")
                             .cellMap(cellMappers -> cellMappers
                                     .cell("A2").prop(NobelPrize::getRanking)
                                     .cell("B2").prop(NobelPrize::getUniversity)
-                                    .cell("C2").prop(NobelPrize::getCountry).val(country -> country.replaceAll("\u00a0", ""))
+                                    // 将"C2"单元格的值去掉不间断空格(\u00a0)并赋值到NobelPrize。country属性
+                                    .cell("C2").prop(NobelPrize::getCountry).val(val -> val.replaceAll("\u00a0", ""))
                                     .cell("D2").prop(NobelPrize::getTotal)
                                     .cell("E2").prop(NobelPrize::getNaturalScienceAwardTotal)
                                     .cell("F2").prop(NobelPrize::getPhysics)
@@ -49,21 +50,35 @@ public class TestRead {
                                     .cell("J2").prop(NobelPrize::getLiterature)
                                     .cell("K2").prop(NobelPrize::getPeace)
                             )
-                            .iterative(true)
-                            .foward(Foward.Down)
-                            .setStepLength(1)
+                            .iterative(true) // 是否迭代读取（即列表数据，默认false）
+                            .foward(Foward.Down) // 迭代方向（默认向下）
                             .onPick(obj -> {
-                                // System.out.println(obj);
+                                // 获得一个对象后的回调，obj即该对象
                                 readResult.add(obj);
                             })
             ).proccessEnd();
         }
 
+        // 打印结果
+        for (int i = 0; i < readResult.size(); i++) {
+            NobelPrize obj = readResult.get(i);
+            System.out.println(obj);
+        }
+        /* 结果如下
+         * NobelPrize{ranking=1, university='哈佛大学', country='美国', total=161, naturalScienceAwardTotal=113, physics=32, chemistry=38, physiologyOrMedicine=43, economy=33, literature=7, peace=8}
+         * NobelPrize{ranking=2, university='剑桥大学', country='英国', total=121, naturalScienceAwardTotal=98, physics=37, chemistry=30, physiologyOrMedicine=31, economy=15, literature=5, peace=3}
+         * NobelPrize{ranking=3, university='伯克利加州大学', country='美国', total=110, naturalScienceAwardTotal=82, physics=34, chemistry=31, physiologyOrMedicine=17, economy=25, literature=3, peace=1**}
+         * NobelPrize{ranking=4, university='芝加哥大学', country='美国', total=100, naturalScienceAwardTotal=62, physics=32, chemistry=19, physiologyOrMedicine=11, economy=33, literature=3, peace=2}
+         * NobelPrize{ranking=5, university='哥伦比亚大学', country='美国', total=97, naturalScienceAwardTotal=70, physics=33, chemistry=15, physiologyOrMedicine=22, economy=15, literature=6, peace=6}
+         * NobelPrize{ranking=7, university='麻省理工学院', country='美国', total=97, naturalScienceAwardTotal=62, physics=34, chemistry=16, physiologyOrMedicine=12, economy=34, literature=0, peace=1}
+         * ......
+         * */
+
     }
 }
 
 ```
-`readResult`即是我们想要的结果。
+上例中`readResult`即是我们想要的结果。
 
 你可以把读excel这件事想象成在整齐的田间摘果，我们坐在单程车里，车从田地的左上至右下只跑一趟，我们想摘几种果子，就雇佣几个对应的"Picker"（采摘工），
 `picker`每摘到一个果子，就触发一次`onPick`事件。
@@ -106,7 +121,7 @@ public class WriteTest {
                                     .cell("B5").prop(NobelPrize::getTotal)
                             )
                             .iterative(true)
-                            .foward(Foward.Right)
+                            .foward(Foward.Right) // 向右迭代
             ).proccessEnd();
         }
     }
@@ -118,11 +133,11 @@ public class WriteTest {
 如果运行无误的话，将在输出目录里有个test3.xlsx，它是这样的：
 ![img2](./docs/example/img2.jpg)
 
-是不是很简单呢，ExcelFlow正如其名那样，像流一样操作excel，无论多么复杂的表格任务，一行代码就能搞定
+是不是很简单呢，ExcelFlow正如其名，像流一样操作excel，无论多么复杂的表格任务，一行代码就能搞定
 （当然真写成一行会被同事和未来的自己打死，还是要适当换行 __(:з)∠)_）。
 
 ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook对象写文件，因此你无需担心大Excel爆内存的情况，
-当然POI读Excel2007时解压缩全在内存中完成，如果文件特别大还是会很占内存，如果你有极端场景或对性能有极致追求的话，阿里的 [EasyExcel](https://github.com/alibaba/easyexcel) 更适合你。
+当然POI读Excel2007时解压缩全在内存中完成，如果文件特别大还是会很占内存，如果你有极端场景或对性能有极致追求，阿里的 [EasyExcel](https://github.com/alibaba/easyexcel) 或许更适合你。
 
 ## TODO
 - [ ] 读转写一条龙
@@ -131,3 +146,5 @@ ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook
 - [ ] 对形状、图片的处理
 - [ ] 对象注解配置模式
 - [ ] json配置模式
+- [ ] 根据Excel模板读/写文件
+- [ ] 支持其他类Excel程序文件（例如wps）
