@@ -1,7 +1,9 @@
 # excelflow
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-流式、连贯接口的读写Excel利器
+流式、优雅、连贯接口，读写Excel
+
+![rm1](./docs/rm1.webp)
 
 ## 快速开始
 ### 添加依赖
@@ -158,6 +160,7 @@ ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook
 当然POI读Excel2007时解压缩全在内存中完成，如果文件特别大还是会很占内存，如果你有极端场景或对性能有极致追求，阿里的 [EasyExcel](https://github.com/alibaba/easyexcel) 或许更适合你。
 
 ## TODO
+- [ ] 支持直接映射Map
 - [ ] 读转写一条龙
 - [ ] 对合并单元格的处理
 - [ ] commit的处理
