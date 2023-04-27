@@ -13,12 +13,12 @@ maven
 <dependency>
   <groupId>io.github.fengxxc</groupId>
   <artifactId>excelflow-core</artifactId>
-  <version>${version}</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 Gradle
 ```
-implementation group: 'io.github.fengxxc', name: 'excelflow-core', version: '${version}'
+implementation group: 'io.github.fengxxc', name: 'excelflow-core', version: '0.1.0'
 ```
 
 ### 读Excel
@@ -160,7 +160,7 @@ ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook
 当然POI读Excel2007时解压缩全在内存中完成，如果文件特别大还是会很占内存，如果你有极端场景或对性能有极致追求，阿里的 [EasyExcel](https://github.com/alibaba/easyexcel) 或许更适合你。
 
 ## TODO
-- [ ] 支持直接映射Map
+- [x] 支持直接映射Map
 - [ ] 读转写一条龙
 - [ ] 对合并单元格的处理
 - [ ] commit的处理
