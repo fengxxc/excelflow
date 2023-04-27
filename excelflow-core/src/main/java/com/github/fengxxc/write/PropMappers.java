@@ -3,9 +3,11 @@ package com.github.fengxxc.write;
 import com.github.fengxxc.Relay;
 import com.github.fengxxc.BaseMappers;
 import com.github.fengxxc.model.Point;
+import com.github.fengxxc.read.CellMappers;
 import com.github.fengxxc.util.AsFunction;
 
 import java.util.TreeSet;
+import java.util.function.Function;
 
 /**
  * @author fengxxc
@@ -51,7 +53,7 @@ public class PropMappers<T> implements BaseMappers<PropMappers<T>, T> {
         // Java泛型擦除可真是操蛋
         // renew
         PropMapper<T, R> reCurrent = PropMapper.<T, R>reOf(current);
-        reCurrent.as(func);
+        reCurrent.prop(func);
         Relay<PropMappers<T>, PropMapper<T, R>, T, R> wrap = new Relay<PropMappers<T>, PropMapper<T, R>, T, R>(this, reCurrent);
 
         current = reCurrent;
@@ -61,7 +63,14 @@ public class PropMappers<T> implements BaseMappers<PropMappers<T>, T> {
     @Override
     public PropMappers<T> prop(String property) {
         assertCurrentNull();
-        current.as(property);
+        current.prop(property);
+        return this;
+    }
+
+    @Override
+    public PropMappers<T> val(Function func) {
+        assertCurrentNull();
+        current.val(func);
         return this;
     }
 

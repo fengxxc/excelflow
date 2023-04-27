@@ -1,5 +1,6 @@
 package com.github.fengxxc.read;
 
+import com.github.fengxxc.DataWrapper;
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import com.github.fengxxc.model.*;
 import com.github.fengxxc.util.ReflectUtils;
@@ -24,7 +25,7 @@ public abstract class DefaultReadFlowHandler {
     private Map<Integer, Picker> pickerIdMap = new HashMap<>();
     private Consumer<EFCell> beforePickCallback;
     private final BiConsumer<Integer, Object> pickCallback;
-    private Map<Picker, BeanWrapperImpl> pickObjCache = new HashMap<>();
+    private Map<Picker, DataWrapper> pickObjCache = new HashMap<>();
 
     // when this cell value is null, set last value as this value? TODO get from config
     private boolean setLastValIfNull = false;
@@ -49,7 +50,9 @@ public abstract class DefaultReadFlowHandler {
         }
 
         final EFCell efCell = new EFCell(cellReference, formattedValue, searchCellMappers);
-        beforePickCallback.accept(efCell);
+        if (beforePickCallback != null) {
+            beforePickCallback.accept(efCell);
+        }
 
         for (CellMapper cellMapper : searchCellMappers) {
             int pickerId = cellMapper.getParentId();
@@ -57,18 +60,7 @@ public abstract class DefaultReadFlowHandler {
             if (!picker.getSheet().equals(this.sheetName)) {
                 continue;
             }
-            BeanWrapperImpl beanWrapper = pickObjCache.get(picker);
-            if (beanWrapper == null) {
-                try {
-                    beanWrapper = new BeanWrapperImpl(ReflectUtils.createInstance(picker.getObject()));
-                } catch (InstantiationException| IllegalAccessException| InvocationTargetException | NoSuchMethodException e) {
-                    throw new ExcelFlowReflectionException("can not create class '" + picker.getObject().getName() + "' instance.");
-                    // e.printStackTrace();
-                }
-                pickObjCache.put(picker, beanWrapper);
-            }
 
-            /* beanWrapper not complete, make property */
             Object value = formattedValue;
             // convert property type
             Class propertyType = cellMapper.getObjectPropertyReturnType();
@@ -79,8 +71,19 @@ public abstract class DefaultReadFlowHandler {
                 value = cellMapper.val().apply(value);
             }
 
+            DataWrapper beanWrapper = pickObjCache.get(picker);
+            if (beanWrapper == null) {
+                try {
+                    beanWrapper = new DataWrapper(picker.getObject());
+                } catch (IllegalAccessException | InstantiationException e) {
+                    throw new ExcelFlowReflectionException("can not create class '" + picker.getObject().getName() + "' instance.");
+                }
+                pickObjCache.put(picker, beanWrapper);
+            }
+
             try {
-                ReflectUtils.setFieldValue(beanWrapper, cellMapper.getObjectProperty(), value);
+                // ReflectUtils.setFieldValue(beanWrapper, cellMapper.getObjectProperty(), value);
+                beanWrapper.setPropertyValue(cellMapper.getObjectProperty(), value);
             } catch (TypeMismatchException e) {
                 throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type.");
                 // e.printStackTrace();

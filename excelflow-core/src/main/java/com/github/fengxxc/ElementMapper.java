@@ -39,11 +39,12 @@ public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T,
         return objectProperty;
     }
 
-    public void as(String objectProperty) {
+    public void prop(String objectProperty) {
         this.objectProperty = objectProperty;
+        this.objectPropertyReturnType = Object.class;
     }
 
-    public void as(AsFunction<T, R> func) {
+    public void prop(AsFunction<T, R> func) {
         String propName = null;
         Pair<String, Class> pair = null;
         try {

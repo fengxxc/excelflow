@@ -1,5 +1,6 @@
 package com.github.fengxxc.write;
 
+import com.github.fengxxc.DataWrapper;
 import com.github.fengxxc.IExcelHandler;
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import com.github.fengxxc.model.Foward;
@@ -93,14 +94,14 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
     }
 
     private void proccessObject(SXSSFSheet finalSheet, PropMapper[] propMappers, int iterationNumn, Foward foward, int stepLength, Object data) {
-        BeanWrapperImpl dataWrapper = null;
+        DataWrapper dataWrapper = null;
         if (data != null) {
-            dataWrapper = new BeanWrapperImpl(data);
+            dataWrapper = new DataWrapper(data);
         }
         for (PropMapper propMapper : propMappers) {
             Object value = propMapper.getDefVal();
             if (dataWrapper != null) {
-                value = ReflectUtils.getFieldValue(dataWrapper, propMapper.getObjectProperty());
+                value = dataWrapper.getPropertyValue(propMapper.getObjectProperty());
             }
             if (propMapper.val() != null) {
                 value = propMapper.val().apply(value);
@@ -178,6 +179,9 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
                 break;
             case "Double":
                 cell.setCellValue((Double) value);
+                break;
+            case "Object":
+                cell.setCellValue(value.toString());
                 break;
             default:
                 throw new ExcelFlowReflectionException("unknow cell type: '" + type.getName() + "' , value is " + value.toString() + ", in " + Point.of(cell.getRowIndex(), cell.getColumnIndex()).toCellReference());

@@ -182,14 +182,6 @@ public class ReflectUtils {
         return newObj;
     }
 
-    public static void setFieldValue(BeanWrapperImpl beanWrapper, String fieldName, Object fieldValue) {
-        beanWrapper.setPropertyValue(fieldName, fieldValue);
-    }
-
-    public static Object getFieldValue(BeanWrapperImpl beanWrapper, String fieldName) {
-        return beanWrapper.getPropertyValue(fieldName);
-    }
-
     public static Object getFieldValueByCglib(Object obj, String fieldName) {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(obj.getClass());

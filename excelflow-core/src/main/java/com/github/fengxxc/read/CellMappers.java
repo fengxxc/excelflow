@@ -7,6 +7,7 @@ import com.github.fengxxc.util.AsFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author fengxxc
@@ -52,7 +53,7 @@ public class CellMappers<T> implements BaseMappers<CellMappers<T>, T> {
         // Java泛型擦除可真是操蛋
         // renew
         CellMapper<T, R> reCurrent = CellMapper.<T, R>reOf(current);
-        reCurrent.as(func);
+        reCurrent.prop(func);
         Relay<CellMappers<T>, CellMapper<T, R>, T, R> wrap = new Relay<CellMappers<T>, CellMapper<T, R>, T, R>(this, reCurrent);
 
         current = reCurrent;
@@ -62,7 +63,14 @@ public class CellMappers<T> implements BaseMappers<CellMappers<T>, T> {
     @Override
     public CellMappers<T> prop(String property) {
         assertCurrentNull();
-        current.as(property);
+        current.prop(property);
+        return this;
+    }
+
+    @Override
+    public CellMappers<T> val(Function func) {
+        assertCurrentNull();
+        current.val(func);
         return this;
     }
 
