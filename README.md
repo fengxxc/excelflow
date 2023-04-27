@@ -54,7 +54,7 @@ public class TestRead {
                             .cellMap(cellMappers -> cellMappers
                                     .cell("A2").prop(NobelPrize::getRanking)
                                     .cell("B2").prop(NobelPrize::getUniversity)
-                                    // 将"C2"单元格的值去掉不间断空格(\u00a0)并赋值到NobelPrize。country属性
+                                    // 将"C2"单元格的值去掉不间断空格(\u00a0)并赋值到NobelPrize.country属性
                                     .cell("C2").prop(NobelPrize::getCountry).val(val -> val.replaceAll("\u00a0", ""))
                                     .cell("D2").prop(NobelPrize::getTotal)
                                     .cell("E2").prop(NobelPrize::getNaturalScienceAwardTotal)
