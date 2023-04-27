@@ -5,11 +5,12 @@
     <parent>
         <artifactId>excelflow</artifactId>
         <groupId>io.github.fengxxc</groupId>
-        <version>0.0.2</version>
+        <version>0.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>excelflow-core</artifactId>
     <name>excelflow-core</name>
+    <description>a easy way to read or write Excel by Java, just one line of code.</description>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->

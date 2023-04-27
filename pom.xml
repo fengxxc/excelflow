@@ -7,9 +7,9 @@
     <groupId>io.github.fengxxc</groupId>
     <artifactId>excelflow</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.2</version>
+    <version>0.1.0</version>
     <name>excelflow</name>
-    <description>a easy way to read or write Excel by Java, just one line of code.</description>
+    <description>a easy way to read or write Excel by Java, just one line of code.(excelflow-core is main program)</description>
     <url>https://github.com/fengxxc/excelflow</url>
 
     <modules>
@@ -157,6 +157,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <!-- Prevent gpg from using pinentry programs -->
+                    <gpgArguments>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
