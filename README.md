@@ -1,4 +1,7 @@
 # excelflow
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+流式、连贯接口的读写Excel利器
 
 ## 快速开始
 ### 添加依赖
@@ -104,7 +107,7 @@ public class TestRead {
 
 ### 写Excel
 写excel的流程与读excel基本一致，还用`NobelPrize`作为例子，
-现在我们想把上面读到的数据行列对调一下写入excel，代码这么写：
+现在我们想把上面读到的数据行列对调一下写入新的excel，代码这么写：
 ```java
 public class WriteTest {
     public void writeXlsx() throws IOException, InvalidFormatException, SAXException, ParserConfigurationException {
@@ -163,3 +166,6 @@ ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook
 - [ ] json配置模式
 - [ ] 根据Excel模板读/写文件
 - [ ] 支持其他类Excel程序文件（例如wps）
+
+## LICENSE
+Apache2.0
