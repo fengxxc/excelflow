@@ -1,5 +1,6 @@
 # excelflow
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/Version-v0.2.0-green.svg)](https://central.sonatype.com/artifact/io.github.fengxxc/excelflow-core/0.2.0)
 
 流式、优雅、连贯接口，读写Excel
 
@@ -13,13 +14,14 @@ maven
 <dependency>
   <groupId>io.github.fengxxc</groupId>
   <artifactId>excelflow-core</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 Gradle
 ```
-implementation group: 'io.github.fengxxc', name: 'excelflow-core', version: '0.1.0'
+implementation group: 'io.github.fengxxc', name: 'excelflow-core', version: '0.2.0'
 ```
+[download jar](https://s01.oss.sonatype.org/service/local/repositories/releases/content/io/github/fengxxc/excelflow-core/0.2.0/excelflow-core-0.2.0.jar)
 
 ### 读Excel
 假设有如下excel，需要读取数据并构建Java对象供后续的业务逻辑消费：
