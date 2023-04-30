@@ -204,6 +204,8 @@ public class RTreeNode<T> {
                 }
             }
             return root;
+        } else if (root.getRect().topology(rect) == Rect.Topology.Equal) {
+            return root;
         }
         return null;
     }
