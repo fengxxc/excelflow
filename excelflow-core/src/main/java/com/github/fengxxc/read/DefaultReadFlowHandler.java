@@ -3,16 +3,17 @@ package com.github.fengxxc.read;
 import com.github.fengxxc.DataWrapper;
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import com.github.fengxxc.model.*;
+import com.github.fengxxc.util.ExcelFlowUtils;
+import com.github.fengxxc.util.QueueHashMap;
 import com.github.fengxxc.util.ReflectUtils;
+import org.apache.commons.math3.util.Pair;
 import org.apache.poi.xssf.model.SharedStringsTable;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.TypeMismatchException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
@@ -26,6 +27,7 @@ public abstract class DefaultReadFlowHandler {
     private Consumer<EFCell> beforePickCallback;
     private final BiConsumer<Integer, Object> pickCallback;
     private Map<Picker, DataWrapper> pickObjCache = new HashMap<>();
+    private QueueHashMap<String, List<CellMapper>> nextCellMappersQueue = new QueueHashMap<String, List<CellMapper>>();
 
     // when this cell value is null, set last value as this value? TODO get from config
     private boolean setLastValIfNull = false;
@@ -44,17 +46,35 @@ public abstract class DefaultReadFlowHandler {
         if (cellRTreeNode == null) {
             return;
         }
-        final List<CellMapper> searchCellMappers = cellRTreeNode.search(Point.of(cellReference));
-        if (searchCellMappers == null || searchCellMappers.size() == 0) {
+        List<CellMapper> matchCellMappers = new ArrayList<>();
+        List<CellMapper> searchCellMappers = cellRTreeNode.search(Point.of(cellReference));
+        if (searchCellMappers != null) {
+            matchCellMappers.addAll(searchCellMappers);
+        }
+        Map.Entry<String, List<CellMapper>> nextPeek = nextCellMappersQueue.peek();
+        if (nextPeek != null) {
+            String nextPeekCellRef = nextPeek.getKey();
+            if (Point.of(cellReference).compareTo(Point.of(nextPeekCellRef)) > 0) {
+                List<CellMapper> nextPeekMappers = nextPeek.getValue();
+                for (CellMapper nextPeekMapper : nextPeekMappers) {
+                    makeNext(nextPeekCellRef, nextPeekMapper, null, this.pickerIdMap.get(nextPeekMapper.getParentId()).getNextFunc());
+                }
+                this.nextCellMappersQueue.remove(nextPeekCellRef);
+                cellFlow(cellReference, formattedValue);
+            } else if (Point.of(cellReference).compareTo(Point.of(nextPeekCellRef)) == 0) {
+                matchCellMappers.addAll(nextPeek.getValue());
+            }
+        }
+        if (matchCellMappers == null || matchCellMappers.size() == 0) {
             return;
         }
 
-        final EFCell efCell = new EFCell(cellReference, formattedValue, searchCellMappers);
+        final EFCell efCell = new EFCell(cellReference, formattedValue, matchCellMappers);
         if (beforePickCallback != null) {
             beforePickCallback.accept(efCell);
         }
 
-        for (CellMapper cellMapper : searchCellMappers) {
+        for (CellMapper cellMapper : matchCellMappers) {
             int pickerId = cellMapper.getParentId();
             Picker picker = (Picker) this.pickerIdMap.get(pickerId);
             if (!picker.getSheet().equals(this.sheetName)) {
@@ -82,14 +102,13 @@ public abstract class DefaultReadFlowHandler {
             }
 
             try {
-                // ReflectUtils.setFieldValue(beanWrapper, cellMapper.getObjectProperty(), value);
                 beanWrapper.setPropertyValue(cellMapper.getObjectProperty(), value);
             } catch (TypeMismatchException e) {
                 throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type.");
                 // e.printStackTrace();
             }
 
-            if (isArriveEndPoint(cellReference, picker)) {
+            if (cellMapper.isEndOfParent()) {
                 /* beanWrapper completed */
                 Consumer pickerPickCallback = picker.getOnPickCallback();
                 Object obj = beanWrapper.getRootInstance();
@@ -104,19 +123,26 @@ public abstract class DefaultReadFlowHandler {
                 }
             }
 
+            /* next... */
+            BiFunction<String, Object, Offset> nextFunc = picker.getNextFunc();
+            makeNext(cellReference, cellMapper, value, nextFunc);
         }
+
+        this.nextCellMappersQueue.remove(cellReference);
     }
 
-    private static boolean isArriveEndPoint(String cellReference, Picker picker) {
-        boolean isFowardY = picker.getFoward() == Foward.Up || picker.getFoward() == Foward.Down;
-        if (picker.getEndPoint().getAxis(isFowardY ? 'x' : 'y') != Point.of(cellReference).getAxis(isFowardY ? 'x' : 'y')) {
-            return false;
+    private void makeNext(String cellReference, CellMapper cellMapper, Object value, BiFunction<String, Object, Offset> nextFunc) {
+        if (nextFunc != null) {
+            Offset offset = nextFunc.apply(cellReference, value);
+            String nextCellRef = ExcelFlowUtils.computNextCellRef(cellReference, offset);
+
+            List<CellMapper> nextCellMappers = this.nextCellMappersQueue.get(nextCellRef);
+            if (nextCellMappers == null) {
+                nextCellMappers = new ArrayList<CellMapper>();
+            }
+            nextCellMappers.add(cellMapper);
+            this.nextCellMappersQueue.offer(nextCellRef, nextCellMappers);
         }
-        int axisVal = Point.of(cellReference).getAxis(isFowardY ? 'y' : 'x');
-        boolean arriveEndPoint = Math.abs(axisVal - picker.getEndPoint().getAxis(isFowardY ? 'y' : 'x')) % picker.getStepLength() == 0;
-        return arriveEndPoint;
     }
-
-
 
 }

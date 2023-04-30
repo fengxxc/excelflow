@@ -137,7 +137,7 @@ public class ExcelFlowXlsHandler extends DefaultReadFlowHandler implements HSSFL
 
     private void cellHandler(String sheetName, int row, int col, String formattedValue) {
         Point point = Point.of(row, col);
-        cellFlow(point.toCellReference().formatAsString(), formattedValue);
+        cellFlow(point.toCellReferenceString(), formattedValue);
     }
 
 }

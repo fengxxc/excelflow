@@ -4,20 +4,21 @@ import com.github.fengxxc.DataWrapper;
 import com.github.fengxxc.IExcelHandler;
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import com.github.fengxxc.model.Foward;
+import com.github.fengxxc.model.Offset;
 import com.github.fengxxc.model.Point;
-import com.github.fengxxc.util.ReflectUtils;
+import com.github.fengxxc.util.ExcelFlowUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.springframework.beans.BeanWrapperImpl;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.function.BiFunction;
 
 /**
  * @author fengxxc
@@ -77,23 +78,25 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             Iterator sourceIterator = recorder.getSourceIterator();
             Class clazz = recorder.getObject();
             TreeSet<PropMapper> mappers = (TreeSet<PropMapper>) recorder.getMappers();
-            PropMapper[] propMappers = mappers.toArray(new PropMapper[0]);
+            Map<PropMapper, String> mapper2CellRefMap = new HashMap<>();
+            for (PropMapper mapper : mappers) {
+            }
+
             if (sourceIterator == null) {
-                proccessObject(finalSheet, propMappers, 0, Foward.Down, 1, null);
+                proccessObject(finalSheet, mappers, mapper2CellRefMap, 0, null, null);
                 return;
             }
             int iterationNumn = 0;
-            Foward foward = recorder.getFoward();
-            int stepLength = recorder.getStepLength();
+            BiFunction<String, Object, Offset> nextFunc = recorder.getNextFunc();
             while (sourceIterator.hasNext()) {
                 Object data = sourceIterator.next();
-                proccessObject(finalSheet, propMappers, iterationNumn, foward, stepLength, data);
+                proccessObject(finalSheet, mappers, mapper2CellRefMap, iterationNumn, nextFunc, data);
                 iterationNumn++;
             }
         });
     }
 
-    private void proccessObject(SXSSFSheet finalSheet, PropMapper[] propMappers, int iterationNumn, Foward foward, int stepLength, Object data) {
+    private void proccessObject(SXSSFSheet finalSheet, TreeSet<PropMapper> propMappers, Map<PropMapper, String> mapper2CellRefMap, int iterationNumn, BiFunction<String, Object, Offset> nextFunc, Object data) {
         DataWrapper dataWrapper = null;
         if (data != null) {
             dataWrapper = new DataWrapper(data);
@@ -108,7 +111,17 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             }
             Class propertyType = propMapper.getObjectPropertyReturnType();
             // set in excel cell
-            Point realPos = getRealPlace(iterationNumn, foward, stepLength, propMapper.getPoint());
+            Point realPos;
+            if (iterationNumn == 0) {
+                realPos = propMapper.getPoint();
+                mapper2CellRefMap.put(propMapper, realPos.toCellReferenceString());
+            } else {
+                String lastCellRef = mapper2CellRefMap.get(propMapper);
+                Offset offset = nextFunc.apply(lastCellRef, value);
+                String cellRef = ExcelFlowUtils.computNextCellRef(lastCellRef, offset);
+                realPos = Point.of(cellRef);
+                mapper2CellRefMap.put(propMapper, cellRef);
+            }
             SXSSFRow row = finalSheet.getRow(realPos.Y);
             if (row == null) {
                 row = finalSheet.createRow(realPos.Y);
@@ -119,30 +132,6 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             }
             setCellValue(cell, value, propertyType);
         }
-    }
-
-    private Point getRealPlace(int iterationNumn, Foward foward, int stepLength, Point point) {
-        Point realPos = Point.of(-1, -1);
-        switch (foward) {
-            case Up:
-                realPos.Y = point.Y - iterationNumn * stepLength;
-                realPos.X = point.X;
-                break;
-            case Left:
-                realPos.Y = point.Y;
-                realPos.X = point.X - iterationNumn * stepLength;
-                break;
-            case Right:
-                realPos.Y = point.Y;
-                realPos.X = point.X + iterationNumn * stepLength;
-                break;
-            default:
-            case Down:
-                realPos.Y = point.Y + iterationNumn * stepLength;
-                realPos.X = point.X;
-                break;
-        }
-        return realPos;
     }
 
     private static void setCellValue(SXSSFCell cell, Object value, Class type) {
@@ -184,7 +173,7 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
                 cell.setCellValue(value.toString());
                 break;
             default:
-                throw new ExcelFlowReflectionException("unknow cell type: '" + type.getName() + "' , value is " + value.toString() + ", in " + Point.of(cell.getRowIndex(), cell.getColumnIndex()).toCellReference());
+                throw new ExcelFlowReflectionException("unknow cell type: '" + type.getName() + "' , value is " + value.toString() + ", in " + Point.of(cell.getRowIndex(), cell.getColumnIndex()).toCellReferenceString());
         }
     }
 

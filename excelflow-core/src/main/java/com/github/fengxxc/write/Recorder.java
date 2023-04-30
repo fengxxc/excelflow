@@ -26,10 +26,6 @@ public class Recorder<T> extends JustWe<Recorder<T>, T> implements Comparable<Re
         return new Recorder<T>().setObject(object);
     }
 
-    public static <T> Recorder<T> of(Class<T> object, boolean iterative) {
-        return new Recorder<T>().setObject(object).iterative(iterative);
-    }
-
     public Recorder<T> source(Iterator<T> iterator) {
         this.iterator = iterator;
         return this;

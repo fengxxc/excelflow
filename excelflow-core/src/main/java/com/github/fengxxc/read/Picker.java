@@ -26,10 +26,6 @@ public class Picker<T> extends JustWe<Picker<T>, T> {
         return new Picker<T>().setObject(object);
     }
 
-    public static <T> Picker<T> of(Class<T> object, boolean iterative) {
-        return new Picker<T>().setObject(object).iterative(iterative);
-    }
-
     public Picker<T> cellMap(Consumer<CellMappers<T>> func) {
         final CellMappers<T> mapper = new CellMappers<T>();
         func.accept(mapper);

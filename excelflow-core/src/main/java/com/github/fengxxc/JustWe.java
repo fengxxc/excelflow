@@ -1,11 +1,13 @@
 package com.github.fengxxc;
 
 import com.github.fengxxc.model.Foward;
+import com.github.fengxxc.model.Offset;
 import com.github.fengxxc.model.Point;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
@@ -20,10 +22,9 @@ public class JustWe<S, T> {
     private Class<T> object;
     // private int sheetAt = -1;
     private String sheet;
-    private Boolean iterative = false;
-    private Foward foward = Foward.Down;
-    private int stepLength = 1;
-    private int stepTotal = -1;
+    // T: cellRef, U: value, R: Offset
+    private BiFunction<String, Object, Offset> nextFunc;
+
     private Point endPoint;
     private Collection<? extends ElementMapper<T, ?>> mappers;
 
@@ -65,39 +66,35 @@ public class JustWe<S, T> {
         return this;
     }*/
 
-    public Boolean iterative() {
-        return iterative;
+    public BiFunction<String, Object, Offset> getNextFunc() {
+        return nextFunc;
     }
 
-    public S iterative(Boolean iterative) {
-        this.iterative = iterative;
-        return (S) this;
-    }
-
-    public Foward getFoward() {
-        return foward;
+    public JustWe<S, T> next(BiFunction<String, Object, Offset> nextFunc) {
+        this.nextFunc = nextFunc;
+        return this;
     }
 
     public S foward(Foward foward) {
-        this.foward = foward;
+        this.foward(foward, 1);
         return (S) this;
     }
 
-    public int getStepLength() {
-        return stepLength;
-    }
-
-    public S setStepLength(int stepLength) {
-        this.stepLength = stepLength;
-        return (S) this;
-    }
-
-    public int getStepTotal() {
-        return stepTotal;
-    }
-
-    public S setStepTotal(int stepTotal) {
-        this.stepTotal = stepTotal;
+    public S foward(Foward foward, int stepLength) {
+        this.nextFunc = (cellRefence, value) -> {
+            switch (foward) {
+                case Up:
+                    return Offset.of(0, -1);
+                case Right:
+                    return Offset.of(1, 0);
+                case Down:
+                    return Offset.of(0, 1);
+                case Left:
+                    return Offset.of(-1, 0);
+            }
+            // default Down
+            return Offset.of(0, 1);
+        };
         return (S) this;
     }
 

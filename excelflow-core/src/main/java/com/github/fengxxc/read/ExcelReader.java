@@ -52,13 +52,14 @@ public abstract class ExcelReader implements IExcelHandler<Picker> {
                 throw new ExcelPortConfigException("can not get sheetIndex or sheetName, bunch id: " + bunch.getId());
             }*/
             int length = 0;
-            final Foward foward = picker.getFoward();
-            Point endPoint = null;
+            CellMapper endCellMapper = null;
             for (Object item : picker.getMappers()) {
                 CellMapper mapper = (CellMapper) item;
                 mapper.setParentId(picker.getId());
-                endPoint = ExcelFlowUtils.maxIn2D(mapper.getPoint(), endPoint);
-                final Rect rect = ExcelFlowUtils.getMaxRect(foward, mapper.getPoint());
+                if (endCellMapper == null || mapper.compareTo(endCellMapper) > 0) {
+                    endCellMapper = mapper;
+                }
+                final Rect rect = Rect.of(mapper.getPoint(), mapper.getPoint());
                 final RTreeNode<CellMapper> rTreeNode = new RTreeNode<CellMapper>(rect).addEntry(mapper);
                 final RTreeNode<CellMapper> cellRTreeNode = this.sheet2CellTreeMap.get(sheetName);
                 if (cellRTreeNode == null) {
@@ -67,7 +68,7 @@ public abstract class ExcelReader implements IExcelHandler<Picker> {
                     cellRTreeNode.add(rTreeNode);
                 }
             }
-            picker.setEndPoint(endPoint);
+            endCellMapper.setEndOfParent(true);
         }
     }
 

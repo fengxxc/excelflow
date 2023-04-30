@@ -47,9 +47,7 @@ public class ExcelFlowTest {
                                     .cell("J2").prop(NobelPrize::getLiterature)
                                     .cell("K2").prop(NobelPrize::getPeace)
                             )
-                            .iterative(true)
                             .foward(Foward.Down)
-                            .setStepLength(1)
                             .onPick(obj -> {
                                 readResult.add(obj);
                             })
@@ -95,9 +93,7 @@ public class ExcelFlowTest {
                                     .cell("J2").prop("literature")
                                     .cell("K2").prop("peace")
                             )
-                            .iterative(true)
                             .foward(Foward.Down)
-                            .setStepLength(1)
                             .onPick(obj -> {
                                 readResult.add(obj);
                             })
@@ -141,9 +137,7 @@ public class ExcelFlowTest {
                                     .cell("J2").prop(NobelPrize::getLiterature)
                                     .cell("K2").prop(NobelPrize::getPeace)
                             )
-                            .iterative(true)
                             .foward(Foward.Down)
-                            .setStepLength(1)
             ).onBeforePick(efCell -> {
                 System.out.println("onBeforePick");
                 System.out.println(efCell.toString());
@@ -181,7 +175,6 @@ public class ExcelFlowTest {
                                     .cell("B4").prop(NobelPrize::getRanking)
                                     .cell("B5").prop(NobelPrize::getTotal)
                             )
-                            .iterative(true)
                             .foward(Foward.Right)
                             // .setStepLength(2)
             ).proccessEnd();
@@ -213,7 +206,6 @@ public class ExcelFlowTest {
                                     .cell("B4").prop("ranking")
                                     .cell("B5").prop("total")
                             )
-                            .iterative(true)
                             .foward(Foward.Right)
                     // .setStepLength(2)
             ).proccessEnd();

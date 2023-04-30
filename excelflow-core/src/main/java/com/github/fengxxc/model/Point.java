@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * @author fengxxc
  */
-public class Point {
+public class Point implements Comparable<Point> {
     public int Y;
     public int X;
 
@@ -69,5 +69,18 @@ public class Point {
 
     public CellReference toCellReference() {
         return new CellReference(Y, X);
+    }
+
+    public String toCellReferenceString() {
+        return toCellReference().formatAsString();
+    }
+
+    @Override
+    public int compareTo(Point o) {
+        final int yDiff = this.Y - o.Y;
+        if (yDiff != 0) {
+            return ((int) yDiff);
+        }
+        return ((int) (this.X - o.X));
     }
 }

@@ -17,7 +17,7 @@ public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T,
     private String objectProperty;
     private Class<?> objectPropertyReturnType;
     private Function<R, R> valFunc;
-
+    private boolean isEndOfParent = false;
 
     public int getParentId() {
         return this.parentId;
@@ -74,16 +74,21 @@ public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T,
         return objectPropertyReturnType;
     }
 
+    public boolean isEndOfParent() {
+        return isEndOfParent;
+    }
+
+    public ElementMapper<T, R> setEndOfParent(boolean endOfParent) {
+        isEndOfParent = endOfParent;
+        return this;
+    }
+
     @Override
     public int compareTo(ElementMapper o) {
         /*final int sheetDiff = this.getParent().getSheetAt() - o.getParentBunch().getSheetAt();
         if (sheetDiff != 0) {
             return sheetDiff;
         }*/
-        final int yDiff = this.getPoint().Y - o.getPoint().Y;
-        if (yDiff != 0) {
-            return ((int) yDiff);
-        }
-        return ((int) (this.getPoint().X - o.getPoint().X));
+        return this.getPoint().compareTo(o.getPoint());
     }
 }
