@@ -72,7 +72,6 @@ public class TestRead {
                                     .cell("J2").prop(NobelPrize::getLiterature)
                                     .cell("K2").prop(NobelPrize::getPeace)
                             )
-                            .iterative(true) // 是否迭代读取（即列表数据，默认false）
                             .foward(Foward.Down) // 迭代方向（默认向下）
                             .onPick(obj -> {
                                 // 获得一个对象后的回调，obj即该对象
@@ -142,7 +141,6 @@ public class WriteTest {
                                     .cell("B4").prop(NobelPrize::getRanking)
                                     .cell("B5").prop(NobelPrize::getTotal)
                             )
-                            .iterative(true)
                             .foward(Foward.Right) // 向右迭代
             ).proccessEnd();
         }
