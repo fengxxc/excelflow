@@ -13,10 +13,11 @@ import java.util.function.Function;
  */
 public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T, R>> {
     private int parentId;
+    private int objectCacheId;
     private Point point;
     private String objectProperty;
     private Class<?> objectPropertyReturnType;
-    private Function<R, R> valFunc;
+    private Function<? extends Object, R> valFunc;
     private boolean isEndOfParent = false;
 
     public int getParentId() {
@@ -25,6 +26,15 @@ public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T,
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public int getObjectCacheId() {
+        return objectCacheId;
+    }
+
+    public ElementMapper<T, R> setObjectCacheId(int objectCacheId) {
+        this.objectCacheId = objectCacheId;
+        return this;
     }
 
     public Point getPoint() {
@@ -62,11 +72,11 @@ public abstract class ElementMapper<T, R> implements Comparable<ElementMapper<T,
         this.objectPropertyReturnType = pair.getSecond();
     }
 
-    public Function<R, R> val() {
+    public Function<? extends Object, R> val() {
         return valFunc;
     }
 
-    public void val(Function<R, R> valFunc) {
+    public void val(Function<? extends Object, R> valFunc) {
         this.valFunc = valFunc;
     }
 

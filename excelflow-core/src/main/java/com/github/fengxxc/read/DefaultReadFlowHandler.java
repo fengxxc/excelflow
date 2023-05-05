@@ -6,12 +6,10 @@ import com.github.fengxxc.model.*;
 import com.github.fengxxc.util.ExcelFlowUtils;
 import com.github.fengxxc.util.QueueHashMap;
 import com.github.fengxxc.util.ReflectUtils;
-import org.apache.commons.math3.util.Pair;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.springframework.beans.TypeMismatchException;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -26,11 +24,11 @@ public abstract class DefaultReadFlowHandler {
     private Map<Integer, Picker> pickerIdMap = new HashMap<>();
     private Consumer<EFCell> beforePickCallback;
     private final BiConsumer<Integer, Object> pickCallback;
-    private Map<Picker, DataWrapper> pickObjCache = new HashMap<>();
+    // private Map<Picker, DataWrapper> pickObjCache = new HashMap<>();
+    private PickObjCache pickObjCache = new PickObjCache();
     private QueueHashMap<String, List<CellMapper>> nextCellMappersQueue = new QueueHashMap<String, List<CellMapper>>();
 
-    // when this cell value is null, set last value as this value? TODO get from config
-    private boolean setLastValIfNull = false;
+    private int nextObjCacheId = 0;
 
     public DefaultReadFlowHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
         this.sheetName = sheetName;
@@ -47,23 +45,31 @@ public abstract class DefaultReadFlowHandler {
             return;
         }
         List<CellMapper> matchCellMappers = new ArrayList<>();
-        List<CellMapper> searchCellMappers = cellRTreeNode.search(Point.of(cellReference));
-        if (searchCellMappers != null) {
-            matchCellMappers.addAll(searchCellMappers);
+        List<CellMapper> sourceCellMappers = cellRTreeNode.search(Point.of(cellReference));
+        if (sourceCellMappers != null) {
+            for (CellMapper sourceCellMapper : sourceCellMappers) {
+                sourceCellMapper.setObjectCacheId(0);
+            }
+            matchCellMappers.addAll(sourceCellMappers);
         }
         Map.Entry<String, List<CellMapper>> nextPeek = nextCellMappersQueue.peek();
         if (nextPeek != null) {
             String nextPeekCellRef = nextPeek.getKey();
             if (Point.of(cellReference).compareTo(Point.of(nextPeekCellRef)) > 0) {
-                List<CellMapper> nextPeekMappers = nextPeek.getValue();
-                for (CellMapper nextPeekMapper : nextPeekMappers) {
+                // proccess cell that jumped but pick
+                for (CellMapper nextPeekMapper : nextPeek.getValue()) {
+                    nextPeekMapper.setObjectCacheId(nextPeekMapper.getObjectCacheId() + 1);
                     makeNext(nextPeekCellRef, nextPeekMapper, null, this.pickerIdMap.get(nextPeekMapper.getParentId()).getNextFunc());
                 }
                 this.nextCellMappersQueue.remove(nextPeekCellRef);
-                cellFlow(cellReference, formattedValue);
-            } else if (Point.of(cellReference).compareTo(Point.of(nextPeekCellRef)) == 0) {
-                matchCellMappers.addAll(nextPeek.getValue());
             }
+        }
+        List<CellMapper> curCellMappers = nextCellMappersQueue.get(cellReference);
+        if (curCellMappers != null) {
+            for (CellMapper curCellMapper : curCellMappers) {
+                curCellMapper.setObjectCacheId(curCellMapper.getObjectCacheId() + 1);
+            }
+            matchCellMappers.addAll(curCellMappers);
         }
         if (matchCellMappers == null || matchCellMappers.size() == 0) {
             return;
@@ -91,20 +97,20 @@ public abstract class DefaultReadFlowHandler {
                 value = cellMapper.val().apply(value);
             }
 
-            DataWrapper beanWrapper = pickObjCache.get(picker);
+            DataWrapper beanWrapper = pickObjCache.get(cellMapper.getParentId(), cellMapper.getObjectCacheId());
             if (beanWrapper == null) {
                 try {
                     beanWrapper = new DataWrapper(picker.getObject());
                 } catch (IllegalAccessException | InstantiationException e) {
                     throw new ExcelFlowReflectionException("can not create class '" + picker.getObject().getName() + "' instance.");
                 }
-                pickObjCache.put(picker, beanWrapper);
+                pickObjCache.put(cellMapper.getParentId(), cellMapper.getObjectCacheId(), beanWrapper);
             }
 
             try {
                 beanWrapper.setPropertyValue(cellMapper.getObjectProperty(), value);
             } catch (TypeMismatchException e) {
-                throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type.");
+                throw new ExcelFlowReflectionException("can not set property '" + cellMapper.getObjectProperty() + "' value '" + formattedValue + "', mismatch type, expected type is '" + cellMapper.getObjectPropertyReturnType() + "'.");
                 // e.printStackTrace();
             }
 
@@ -118,22 +124,21 @@ public abstract class DefaultReadFlowHandler {
                 if (pickCallback != null) {
                     pickCallback.accept(picker.getId(), obj);
                 }
-                if (!setLastValIfNull) {
-                    pickObjCache.replace(picker, null);
-                }
+                pickObjCache.remove(cellMapper.getParentId(), cellMapper.getObjectCacheId());
             }
 
             /* next... */
-            BiFunction<String, Object, Offset> nextFunc = picker.getNextFunc();
+            BiFunction<String, PropVal, Offset> nextFunc = picker.getNextFunc();
             makeNext(cellReference, cellMapper, value, nextFunc);
         }
 
         this.nextCellMappersQueue.remove(cellReference);
     }
 
-    private void makeNext(String cellReference, CellMapper cellMapper, Object value, BiFunction<String, Object, Offset> nextFunc) {
+    private void makeNext(String cellReference, CellMapper cellMapper, Object value, BiFunction<String, PropVal, Offset> nextFunc) {
         if (nextFunc != null) {
-            Offset offset = nextFunc.apply(cellReference, value);
+            PropVal propVal = PropVal.of(cellMapper.getObjectProperty(), value, cellMapper.getObjectPropertyReturnType());
+            Offset offset = nextFunc.apply(cellReference, propVal);
             String nextCellRef = ExcelFlowUtils.computNextCellRef(cellReference, offset);
 
             List<CellMapper> nextCellMappers = this.nextCellMappersQueue.get(nextCellRef);

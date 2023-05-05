@@ -3,6 +3,7 @@ package com.github.fengxxc;
 import com.github.fengxxc.model.Foward;
 import com.github.fengxxc.model.Offset;
 import com.github.fengxxc.model.Point;
+import com.github.fengxxc.model.PropVal;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class JustWe<S, T> {
     // private int sheetAt = -1;
     private String sheet;
     // T: cellRef, U: value, R: Offset
-    private BiFunction<String, Object, Offset> nextFunc;
+    private BiFunction<String, PropVal<T, ? extends Object>, Offset> nextFunc;
 
     private Point endPoint;
     private Collection<? extends ElementMapper<T, ?>> mappers;
@@ -66,13 +67,18 @@ public class JustWe<S, T> {
         return this;
     }*/
 
-    public BiFunction<String, Object, Offset> getNextFunc() {
+    public BiFunction<String, PropVal<T, ? extends Object>, Offset> getNextFunc() {
         return nextFunc;
     }
 
-    public JustWe<S, T> next(BiFunction<String, Object, Offset> nextFunc) {
+    /**
+     * where next cell offset
+     * @param nextFunc
+     * @return
+     */
+    public S next(BiFunction<String, PropVal<T, ? extends Object>, Offset> nextFunc) {
         this.nextFunc = nextFunc;
-        return this;
+        return (S) this;
     }
 
     public S foward(Foward foward) {
@@ -81,16 +87,12 @@ public class JustWe<S, T> {
     }
 
     public S foward(Foward foward, int stepLength) {
-        this.nextFunc = (cellRefence, value) -> {
+        this.nextFunc = (cellRefence, propVal) -> {
             switch (foward) {
-                case Up:
-                    return Offset.of(0, -1);
                 case Right:
                     return Offset.of(1, 0);
                 case Down:
                     return Offset.of(0, 1);
-                case Left:
-                    return Offset.of(-1, 0);
             }
             // default Down
             return Offset.of(0, 1);

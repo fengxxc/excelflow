@@ -6,6 +6,7 @@ import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import com.github.fengxxc.model.Foward;
 import com.github.fengxxc.model.Offset;
 import com.github.fengxxc.model.Point;
+import com.github.fengxxc.model.PropVal;
 import com.github.fengxxc.util.ExcelFlowUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -117,7 +118,8 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
                 mapper2CellRefMap.put(propMapper, realPos.toCellReferenceString());
             } else {
                 String lastCellRef = mapper2CellRefMap.get(propMapper);
-                Offset offset = nextFunc.apply(lastCellRef, value);
+                PropVal propVal = PropVal.of(propMapper.getObjectProperty(), value, propMapper.getObjectPropertyReturnType());
+                Offset offset = nextFunc.apply(lastCellRef, propVal);
                 String cellRef = ExcelFlowUtils.computNextCellRef(lastCellRef, offset);
                 realPos = Point.of(cellRef);
                 mapper2CellRefMap.put(propMapper, cellRef);
