@@ -22,6 +22,41 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ExcelFlowTest {
 
+    static NobelPrize[] READ_EXPECTEDS = {
+            new NobelPrize().setRanking(1).setUniversity("㊗哈佛大学").setCountry("美国").setTotal(161).setNaturalScienceAwardTotal(113).setPhysics(32).setChemistry("38").setPhysiologyOrMedicine(43).setEconomy(33).setLiterature(7).setPeace("8"),
+            new NobelPrize().setRanking(2).setUniversity("㊗剑桥大学").setCountry("英国").setTotal(121).setNaturalScienceAwardTotal(98).setPhysics(37).setChemistry("30").setPhysiologyOrMedicine(31).setEconomy(15).setLiterature(5).setPeace("3"),
+            new NobelPrize().setRanking(3).setUniversity("㊗伯克利加州大学").setCountry("美国").setTotal(110).setNaturalScienceAwardTotal(82).setPhysics(34).setChemistry("31").setPhysiologyOrMedicine(17).setEconomy(25).setLiterature(3).setPeace("1**"),
+            new NobelPrize().setRanking(4).setUniversity("㊗芝加哥大学").setCountry("美国").setTotal(100).setNaturalScienceAwardTotal(62).setPhysics(32).setChemistry("19").setPhysiologyOrMedicine(11).setEconomy(33).setLiterature(3).setPeace("2"),
+            new NobelPrize().setRanking(5).setUniversity("㊗哥伦比亚大学").setCountry("美国").setTotal(97).setNaturalScienceAwardTotal(70).setPhysics(33).setChemistry("15").setPhysiologyOrMedicine(22).setEconomy(15).setLiterature(6).setPeace("6"),
+            new NobelPrize().setRanking(7).setUniversity("㊗麻省理工学院").setCountry("美国").setTotal(97).setNaturalScienceAwardTotal(62).setPhysics(34).setChemistry("16").setPhysiologyOrMedicine(12).setEconomy(34).setLiterature(0).setPeace("1"),
+            new NobelPrize().setRanking(0).setUniversity("㊗史丹佛大学").setCountry("美国").setTotal(86).setNaturalScienceAwardTotal(55).setPhysics(26).setChemistry("13").setPhysiologyOrMedicine(16).setEconomy(28).setLiterature(3).setPeace("1**"),
+            new NobelPrize().setRanking(8).setUniversity("㊗加利福尼亚理工学院").setCountry("美国").setTotal(76).setNaturalScienceAwardTotal(70).setPhysics(31).setChemistry("17").setPhysiologyOrMedicine(22).setEconomy(6).setLiterature(0).setPeace("1**"),
+            new NobelPrize().setRanking(9).setUniversity("㊗牛津大学").setCountry("英国").setTotal(72).setNaturalScienceAwardTotal(53).setPhysics(15).setChemistry("19").setPhysiologyOrMedicine(19).setEconomy(9).setLiterature(5).setPeace("6**"),
+            new NobelPrize().setRanking(10).setUniversity("㊗普林斯顿大学").setCountry("美国").setTotal(69).setNaturalScienceAwardTotal(42).setPhysics(29).setChemistry("9").setPhysiologyOrMedicine(4).setEconomy(21).setLiterature(5).setPeace("1"),
+            new NobelPrize().setRanking(11).setUniversity("㊗耶鲁大学").setCountry("美国").setTotal(65).setNaturalScienceAwardTotal(34).setPhysics(8).setChemistry("12").setPhysiologyOrMedicine(14).setEconomy(23).setLiterature(5).setPeace("3"),
+            new NobelPrize().setRanking(12).setUniversity("㊗康奈尔大学").setCountry("美国").setTotal(61).setNaturalScienceAwardTotal(50).setPhysics(23).setChemistry("12").setPhysiologyOrMedicine(15).setEconomy(5).setLiterature(4).setPeace("2"),
+            new NobelPrize().setRanking(13).setUniversity("㊗柏林洪堡大学").setCountry("德国").setTotal(57).setNaturalScienceAwardTotal(49).setPhysics(14).setChemistry("23").setPhysiologyOrMedicine(12).setEconomy(1).setLiterature(4).setPeace("3"),
+            new NobelPrize().setRanking(14).setUniversity("㊗巴黎大学").setCountry("法国").setTotal(51).setNaturalScienceAwardTotal(35).setPhysics(15).setChemistry("10***").setPhysiologyOrMedicine(10).setEconomy(4).setLiterature(6).setPeace("7"),
+            new NobelPrize().setRanking(15).setUniversity("㊗哥廷根大学").setCountry("德国").setTotal(45).setNaturalScienceAwardTotal(43).setPhysics(19).setChemistry("16").setPhysiologyOrMedicine(8).setEconomy(0).setLiterature(1).setPeace("1"),
+            new NobelPrize().setRanking(16).setUniversity("㊗慕尼黑大学").setCountry("德国").setTotal(43).setNaturalScienceAwardTotal(42).setPhysics(14).setChemistry("19").setPhysiologyOrMedicine(9).setEconomy(0).setLiterature(1).setPeace("1**"),
+            new NobelPrize().setRanking(17).setUniversity("㊗约翰·霍普金斯大学").setCountry("美国").setTotal(39).setNaturalScienceAwardTotal(30).setPhysics(4).setChemistry("8").setPhysiologyOrMedicine(18).setEconomy(5).setLiterature(1).setPeace("3"),
+            new NobelPrize().setRanking(19).setUniversity("㊗哥本哈根大学").setCountry("丹麦").setTotal(39).setNaturalScienceAwardTotal(34).setPhysics(19).setChemistry("7").setPhysiologyOrMedicine(8).setEconomy(3).setLiterature(2).setPeace("1**"),
+            new NobelPrize().setRanking(0).setUniversity("㊗纽约大学").setCountry("美国").setTotal(38).setNaturalScienceAwardTotal(20).setPhysics(3).setChemistry("5").setPhysiologyOrMedicine(12).setEconomy(14).setLiterature(2).setPeace("2"),
+            new NobelPrize().setRanking(0).setUniversity("㊗洛克菲勒大学").setCountry("美国").setTotal(38).setNaturalScienceAwardTotal(38).setPhysics(1).setChemistry("11").setPhysiologyOrMedicine(26).setEconomy(0).setLiterature(0).setPeace("0"),
+            new NobelPrize().setRanking(21).setUniversity("㊗宾夕法尼亚大学").setCountry("美国").setTotal(36).setNaturalScienceAwardTotal(25).setPhysics(4).setChemistry("10").setPhysiologyOrMedicine(11).setEconomy(11).setLiterature(0).setPeace("0"),
+            new NobelPrize().setRanking(22).setUniversity("㊗伦敦大学学院").setCountry("英国").setTotal(34).setNaturalScienceAwardTotal(31).setPhysics(5).setChemistry("7").setPhysiologyOrMedicine(19).setEconomy(2).setLiterature(1).setPeace("0"),
+            new NobelPrize().setRanking(23).setUniversity("㊗苏黎世联邦理工学院").setCountry("瑞士").setTotal(32).setNaturalScienceAwardTotal(32).setPhysics(11).setChemistry("17").setPhysiologyOrMedicine(4).setEconomy(0).setLiterature(0).setPeace("0"),
+            new NobelPrize().setRanking(24).setUniversity("㊗伊利诺伊大学香槟分校").setCountry("美国").setTotal(30).setNaturalScienceAwardTotal(27).setPhysics(11).setChemistry("5").setPhysiologyOrMedicine(11).setEconomy(3).setLiterature(0).setPeace("0"),
+            new NobelPrize().setRanking(0).setUniversity("㊗明尼苏达大学").setCountry("美国").setTotal(30).setNaturalScienceAwardTotal(15).setPhysics(7).setChemistry("4").setPhysiologyOrMedicine(4).setEconomy(12).setLiterature(2).setPeace("1"),
+            new NobelPrize().setRanking(26).setUniversity("㊗圣地亚哥加利福尼亚大学").setCountry("美国").setTotal(27).setNaturalScienceAwardTotal(24).setPhysics(5).setChemistry("9").setPhysiologyOrMedicine(10).setEconomy(3).setLiterature(0).setPeace("1**"),
+            new NobelPrize().setRanking(0).setUniversity("㊗海德堡大学").setCountry("德国").setTotal(27).setNaturalScienceAwardTotal(24).setPhysics(11).setChemistry("8").setPhysiologyOrMedicine(5).setEconomy(0).setLiterature(1).setPeace("2"),
+            new NobelPrize().setRanking(28).setUniversity("㊗密歇根大学").setCountry("美国").setTotal(26).setNaturalScienceAwardTotal(18).setPhysics(9).setChemistry("3").setPhysiologyOrMedicine(6).setEconomy(6).setLiterature(2).setPeace("0"),
+            new NobelPrize().setRanking(0).setUniversity("㊗威斯康星大学麦迪逊分校").setCountry("美国").setTotal(26).setNaturalScienceAwardTotal(22).setPhysics(6).setChemistry("7").setPhysiologyOrMedicine(10).setEconomy(2).setLiterature(1).setPeace("0"),
+            new NobelPrize().setRanking(30).setUniversity("㊗加州大学洛杉矶分校").setCountry("美国").setTotal(25).setNaturalScienceAwardTotal(13).setPhysics(2).setChemistry("8").setPhysiologyOrMedicine(3).setEconomy(9).setLiterature(1).setPeace("2"),
+            new NobelPrize().setRanking(0).setUniversity("㊗曼彻斯特大学").setCountry("英国").setTotal(25).setNaturalScienceAwardTotal(22).setPhysics(11).setChemistry("9").setPhysiologyOrMedicine(2).setEconomy(3).setLiterature(0).setPeace("0"),
+            new NobelPrize().setRanking(0).setUniversity("㊗圣路易斯华盛顿大学").setCountry("美国").setTotal(25).setNaturalScienceAwardTotal(24).setPhysics(1).setChemistry("5").setPhysiologyOrMedicine(18).setEconomy(1).setLiterature(0).setPeace("0"),
+    };
+
     @Before
     public void setUp() throws Exception {
     }
@@ -37,7 +72,7 @@ public class ExcelFlowTest {
                             .cellMap(cellMappers -> cellMappers
                                     .cell("A2").prop(NobelPrize::getRanking).val(v -> ((int) v))
                                     .cell("B2").prop(NobelPrize::getUniversity).val(v -> "㊗" + v)
-                                    .cell("C2").prop(NobelPrize::getCountry).val(country -> country.replaceAll("\u00a0", ""))
+                                    .cell("C2").prop(NobelPrize::getCountry).val(country -> ((String) country).replaceAll("\u00a0", ""))
                                     .cell("D2").prop(NobelPrize::getTotal)
                                     .cell("E2").prop(NobelPrize::getNaturalScienceAwardTotal)
                                     .cell("F2").prop(NobelPrize::getPhysics)
@@ -62,13 +97,7 @@ public class ExcelFlowTest {
         for (int i = 0; i < readResult.size(); i++) {
             NobelPrize obj = readResult.get(i);
             // System.out.println(obj);
-            switch (i) {
-                case 0:
-                    NobelPrize expected = new NobelPrize().setRanking(1).setUniversity("㊗哈佛大学").setCountry("美国").setTotal(161)
-                            .setNaturalScienceAwardTotal(113).setPhysics(32).setChemistry("38").setPhysiologyOrMedicine(43)
-                            .setEconomy(33).setLiterature(7).setPeace("8");
-                    Assert.assertEquals(expected, obj);
-            }
+            Assert.assertEquals(READ_EXPECTEDS[i], obj);
         }
     }
 
@@ -119,7 +148,7 @@ public class ExcelFlowTest {
 
     @Test
     public void readXls() throws IOException, ParserConfigurationException, OpenXML4JException, SAXException {
-        // new ArrayList<Integer>().stream().map()
+        ArrayList<NobelPrize> readResult = new ArrayList<>();
         try(InputStream is = ExcelFlow.class.getResourceAsStream("/excel/test1.xls")) {
             ExcelFlow.read(is).picks(
                     Picker.of(NobelPrize.class)
@@ -127,7 +156,7 @@ public class ExcelFlowTest {
                             .cellMap(cellMappers -> cellMappers
                                     .cell("A2").prop(NobelPrize::getRanking)
                                     .cell("B2").prop(NobelPrize::getUniversity).val(v -> "㊗" + v)
-                                    .cell("C2").prop(NobelPrize::getCountry)
+                                    .cell("C2").prop(NobelPrize::getCountry).val(country -> ((String) country).replaceAll("\u00a0", ""))
                                     .cell("D2").prop(NobelPrize::getTotal)
                                     .cell("E2").prop(NobelPrize::getNaturalScienceAwardTotal)
                                     .cell("F2").prop(NobelPrize::getPhysics)
@@ -138,15 +167,22 @@ public class ExcelFlowTest {
                                     .cell("K2").prop(NobelPrize::getPeace)
                             )
                             .foward(Foward.Down)
+                            .onPick(obj -> {
+                                readResult.add(obj);
+                            })
             ).onBeforePick(efCell -> {
-                System.out.println("onBeforePick");
-                System.out.println(efCell.toString());
+                // System.out.println("onBeforePick");
+                // System.out.println(efCell.toString());
             }).onPick((pickerId, object) -> {
-                System.out.println("onPick");
-                // System.out.println(pickerId);
-                System.out.println(object);
+                // System.out.println("onPick");
+                // System.out.println(object);
             }).proccessEnd();
 
+        }
+        for (int i = 0; i < readResult.size(); i++) {
+            NobelPrize obj = readResult.get(i);
+            // System.out.println(obj);
+            Assert.assertEquals(READ_EXPECTEDS[i], obj);
         }
     }
 
