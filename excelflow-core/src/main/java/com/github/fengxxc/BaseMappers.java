@@ -1,7 +1,7 @@
 package com.github.fengxxc;
 
 import com.github.fengxxc.model.Point;
-import com.github.fengxxc.util.AsFunction;
+import com.github.fengxxc.util.PropFunction;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -14,7 +14,7 @@ public interface BaseMappers<S extends BaseMappers<S, T>, T> {
 
     S cell(Point point);
 
-    <R> Relay<S, ? extends ElementMapper<T, R>, T, R> prop(AsFunction<T, R> func);
+    <R> Relay<S, ? extends ElementMapper<T, R>, T, R> prop(PropFunction<T, R> func);
 
     S prop(String property);
 

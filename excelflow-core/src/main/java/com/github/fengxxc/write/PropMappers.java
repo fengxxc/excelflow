@@ -3,8 +3,7 @@ package com.github.fengxxc.write;
 import com.github.fengxxc.Relay;
 import com.github.fengxxc.BaseMappers;
 import com.github.fengxxc.model.Point;
-import com.github.fengxxc.read.CellMappers;
-import com.github.fengxxc.util.AsFunction;
+import com.github.fengxxc.util.PropFunction;
 
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -47,7 +46,7 @@ public class PropMappers<T> implements BaseMappers<PropMappers<T>, T> {
     }
 
     @Override
-    public <R> Relay<PropMappers<T>, PropMapper<T, R>, T, R> prop(AsFunction<T, R> func) {
+    public <R> Relay<PropMappers<T>, PropMapper<T, R>, T, R> prop(PropFunction<T, R> func) {
         assertCurrentNull();
 
         // Java泛型擦除可真是操蛋

@@ -2,7 +2,6 @@ package com.github.fengxxc.util;
 
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
 import org.apache.commons.math3.util.Pair;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
@@ -12,10 +11,6 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * @author fengxxc
@@ -25,9 +20,8 @@ public class ReflectUtils {
     /**
      * parse lambda method to property name and return type
      * @param func
-     * @return first: property name, second: return type
      */
-    public static <T> Pair<String, Class> parseLambdaMethod(AsFunction<T, ?> func) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public static <T> Pair<String, Class> parseLambdaMethod(PropFunction<T, ?> func) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         SerializedLambda lambda = getSerializedLambda(func);
 
         // get prop name
@@ -57,7 +51,6 @@ public class ReflectUtils {
     /**
      * Serializable Function reflect to SerializedLambda
      * @param func
-     * @return
      */
     public static SerializedLambda getSerializedLambda(Serializable func) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = func.getClass().getDeclaredMethod("writeReplace");

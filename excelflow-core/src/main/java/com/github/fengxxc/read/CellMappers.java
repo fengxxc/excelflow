@@ -3,7 +3,7 @@ package com.github.fengxxc.read;
 import com.github.fengxxc.Relay;
 import com.github.fengxxc.BaseMappers;
 import com.github.fengxxc.model.Point;
-import com.github.fengxxc.util.AsFunction;
+import com.github.fengxxc.util.PropFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class CellMappers<T> implements BaseMappers<CellMappers<T>, T> {
     }
 
     @Override
-    public <R> Relay<CellMappers<T>, CellMapper<T, R>, T, R> prop(AsFunction<T, R> func) {
+    public <R> Relay<CellMappers<T>, CellMapper<T, R>, T, R> prop(PropFunction<T, R> func) {
         assertCurrentNull();
 
         // Java泛型擦除可真是操蛋
