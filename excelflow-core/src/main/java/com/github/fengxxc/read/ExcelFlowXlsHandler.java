@@ -35,9 +35,18 @@ public class ExcelFlowXlsHandler extends DefaultReadFlowHandler implements HSSFL
     private int formulaRow;
     private short formulaColumn;
 
-    public ExcelFlowXlsHandler(POIFSFileSystem poifsFileSystem, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) throws IOException {
-        super(null, null, sheet2CellTreeMap, pickerIdMap, beforePickCallback, pickCallback);
+    private Consumer<String> sheetEndCallback;
 
+    public ExcelFlowXlsHandler(
+            POIFSFileSystem poifsFileSystem
+            , Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap
+            , Map<Integer, Picker> pickerIdMap
+            , Consumer<EFCell> beforePickCallback
+            , BiConsumer<Integer, Object> pickCallback
+            , Consumer<String> sheetEndCallback
+    ) throws IOException {
+        super(null, null, sheet2CellTreeMap, pickerIdMap, beforePickCallback, pickCallback);
+        this.sheetEndCallback = sheetEndCallback;
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);
         HSSFEventFactory factory = new HSSFEventFactory();
@@ -66,6 +75,9 @@ public class ExcelFlowXlsHandler extends DefaultReadFlowHandler implements HSSFL
                     sheetIndex++;
                     if (orderedBSRs == null) {
                         orderedBSRs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
+                    }
+                    if (sheetName != null) {
+                        this.sheetEndCallback.accept(sheetName);
                     }
                     sheetName = orderedBSRs[sheetIndex].getSheetname();
                 }

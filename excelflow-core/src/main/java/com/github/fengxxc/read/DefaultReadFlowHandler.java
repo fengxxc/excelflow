@@ -24,13 +24,17 @@ public abstract class DefaultReadFlowHandler {
     private Map<Integer, Picker> pickerIdMap = new HashMap<>();
     private Consumer<EFCell> beforePickCallback;
     private final BiConsumer<Integer, Object> pickCallback;
-    // private Map<Picker, DataWrapper> pickObjCache = new HashMap<>();
     private PickObjCache pickObjCache = new PickObjCache();
     private QueueHashMap<String, List<CellMapper>> nextCellMappersQueue = new QueueHashMap<String, List<CellMapper>>();
 
-    private int nextObjCacheId = 0;
-
-    public DefaultReadFlowHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
+    public DefaultReadFlowHandler(
+            String sheetName
+            , SharedStringsTable sst
+            , Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap
+            , Map<Integer, Picker> pickerIdMap
+            , Consumer<EFCell> beforePickCallback
+            , BiConsumer<Integer, Object> pickCallback
+    ) {
         this.sheetName = sheetName;
         this.sst = sst;
         this.sheet2CellTreeMap = sheet2CellTreeMap;
@@ -150,4 +154,7 @@ public abstract class DefaultReadFlowHandler {
         }
     }
 
+    public String getSheetName() {
+        return sheetName;
+    }
 }

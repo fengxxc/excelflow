@@ -56,21 +56,37 @@ public class ExcelFlowXlsxHandler extends XSSFSheetXMLHandler {
         }
     }
 
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        super.endElement(uri, localName, qName);
+    }
+
     /**
      * @author fengxxc
-
      */
     public static class SheetSaxHandler<R> extends DefaultReadFlowHandler implements SheetContentsHandler {
+        private Consumer<String> sheetEndCallback;
 
-        public SheetSaxHandler(String sheetName, SharedStringsTable sst, Map<String, RTreeNode<CellMapper>> sheet2CellTreeMap, Map<Integer, Picker> pickerIdMap, Consumer<EFCell> beforePickCallback, BiConsumer<Integer, Object> pickCallback) {
+        public SheetSaxHandler(
+                String sheetName
+                , SharedStringsTable sst, Map<String
+                , RTreeNode<CellMapper>> sheet2CellTreeMap
+                , Map<Integer, Picker> pickerIdMap
+                , Consumer<EFCell> beforePickCallback
+                , BiConsumer<Integer, Object> pickCallback
+                , Consumer<String> sheetEndCallback
+        ) {
             super(sheetName, sst, sheet2CellTreeMap, pickerIdMap, beforePickCallback, pickCallback);
+            this.sheetEndCallback = sheetEndCallback;
         }
 
         @Override
         public void headerFooter(String text, boolean isHeader, String tagName) {}
 
         @Override
-        public void endSheet() {}
+        public void endSheet() {
+            this.sheetEndCallback.accept(super.sheetName);
+        }
 
         @Override
         public void startRow(int rowNum) {}

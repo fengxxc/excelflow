@@ -14,7 +14,8 @@ public class ExcelXlsReader extends ExcelReader {
     @Override
     public void proccessEnd() throws IOException, InvalidFormatException, ParserConfigurationException, SAXException {
         POIFSFileSystem poifsFileSystem = new POIFSFileSystem(super.getInputStream());
-        new ExcelFlowXlsHandler(poifsFileSystem, this.sheet2CellTreeMap, this.pickerIdMap, this.beforePickCallback, this.pickCallback);
+        ExcelFlowXlsHandler handler = new ExcelFlowXlsHandler(poifsFileSystem, this.sheet2CellTreeMap, this.pickerIdMap, this.beforePickCallback, this.pickCallback, this.sheetEndCallback);
+        this.sheetEndCallback.accept(handler.getSheetName());
     }
 
 }

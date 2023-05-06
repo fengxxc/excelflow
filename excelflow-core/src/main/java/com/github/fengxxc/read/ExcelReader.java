@@ -3,7 +3,8 @@ package com.github.fengxxc.read;
 import com.github.fengxxc.IExcelHandler;
 import com.github.fengxxc.exception.ExcelFlowConfigException;
 import com.github.fengxxc.model.*;
-import com.github.fengxxc.util.ExcelFlowUtils;
+import com.github.fengxxc.write.ExcelWriter;
+import com.github.fengxxc.write.ObjIterator;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.xml.sax.SAXException;
@@ -11,6 +12,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -26,6 +28,7 @@ public abstract class ExcelReader implements IExcelHandler<Picker> {
     protected Consumer<EFCell> beforePickCallback;
     protected BiConsumer<Integer, Object> pickCallback;
     protected BiConsumer<String, String> mergeCellCallback;
+    protected Consumer<String> sheetEndCallback;
 
     public ExcelReader read(InputStream is) throws IOException, OpenXML4JException {
         this.is = is;
@@ -75,6 +78,43 @@ public abstract class ExcelReader implements IExcelHandler<Picker> {
     @Override
     public abstract void proccessEnd() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException;
 
+    public ExcelWriter proccessThenWrite(OutputStream os) throws OpenXML4JException, ParserConfigurationException, SAXException, IOException {
+        Map<Integer, ObjIterator> objIteratorMap = new HashMap<>();
+        pickerIdMap.forEach((pickId, picker) -> {
+            objIteratorMap.put(pickId, ObjIterator.of(picker.getObject(), new EndSignal()));
+        });
+        BiConsumer<Integer, Object> pickFunc = (pickId, object) -> {
+            ObjIterator objIterator = objIteratorMap.get(pickId);
+            try {
+                objIterator.put(object);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            objIteratorMap.put(pickId, objIterator);
+        };
+        Consumer<String> sheetEndFunc = (sheetName) -> {
+            objIteratorMap.forEach((pickId, objIterator) -> {
+                // send end signal
+                try {
+                    objIterator.putEndSignal();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        };
+        this.pickCallback = this.pickCallback == null ? pickFunc : this.pickCallback.andThen(pickFunc);
+        this.sheetEndCallback = this.sheetEndCallback == null ? sheetEndFunc : this.sheetEndCallback.andThen(sheetEndFunc);
+        new Thread(() -> {
+            try {
+                proccessEnd();
+            } catch (IOException | OpenXML4JException | ParserConfigurationException | SAXException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        ExcelWriter excelWriter = new ExcelWriter(os, objIteratorMap);
+        return excelWriter;
+    }
+
     public ExcelReader picks(Picker... pickers) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException {
         this.accept(pickers);
         return this;
@@ -94,4 +134,9 @@ public abstract class ExcelReader implements IExcelHandler<Picker> {
         this.mergeCellCallback = mergeCellCallback;
         return this;
     }
+
+    /**
+     * @author fengxxc
+     */
+    public static class EndSignal {}
 }

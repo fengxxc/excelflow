@@ -3,7 +3,6 @@ package com.github.fengxxc.write;
 import com.github.fengxxc.DataWrapper;
 import com.github.fengxxc.IExcelHandler;
 import com.github.fengxxc.exception.ExcelFlowReflectionException;
-import com.github.fengxxc.model.Foward;
 import com.github.fengxxc.model.Offset;
 import com.github.fengxxc.model.Point;
 import com.github.fengxxc.model.PropVal;
@@ -27,9 +26,15 @@ import java.util.function.BiFunction;
 public class ExcelWriter implements IExcelHandler<Recorder> {
     private OutputStream os;
     private Map<String, TreeSet<Recorder>> sheet2RecordersMap = new HashMap<>();
+    private Map<Integer, ObjIterator> objIteratorMap;
 
     public ExcelWriter(OutputStream os) {
         this.os = os;
+    }
+
+    public ExcelWriter(OutputStream os, Map<Integer, ObjIterator> objIteratorMap) {
+        this.os = os;
+        this.objIteratorMap = objIteratorMap;
     }
 
     public ExcelWriter record(Recorder... recorders) throws ParserConfigurationException, InvalidFormatException, SAXException, IOException {
@@ -44,6 +49,14 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             if (recorder.getId() == -1) {
                 recorder.setId(i);
             }
+
+            // maybe it is read to write
+            ObjIterator objIterator = this.objIteratorMap.get(recorder.getId());
+            if (recorder.getSourceIterator() == null) {
+                recorder.source(objIterator);
+                // recorder.setObject(objIterator.getKind());
+            }
+
             String sheetName = recorder.getSheet();
             if (sheetName == null) {
                 sheetName = "Sheet1";
@@ -91,6 +104,9 @@ public class ExcelWriter implements IExcelHandler<Recorder> {
             BiFunction<String, Object, Offset> nextFunc = recorder.getNextFunc();
             while (sourceIterator.hasNext()) {
                 Object data = sourceIterator.next();
+                if (data == null) {
+                    continue;
+                }
                 proccessObject(finalSheet, mappers, mapper2CellRefMap, iterationNumn, nextFunc, data);
                 iterationNumn++;
             }

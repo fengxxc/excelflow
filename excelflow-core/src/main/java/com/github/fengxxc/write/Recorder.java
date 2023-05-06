@@ -18,6 +18,10 @@ public class Recorder<T> extends JustWe<Recorder<T>, T> implements Comparable<Re
         return new Recorder<T>();
     }
 
+    public static <T> Recorder<T> of(int id) {
+        return new Recorder<T>().setId(id);
+    }
+
     public static <T> Recorder<T> of(int id, Class<T> object) {
         return new Recorder<T>().setId(id);
     }
