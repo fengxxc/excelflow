@@ -1,6 +1,6 @@
 # excelflow
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![License](https://img.shields.io/badge/Version-v0.3.0-green.svg)](https://central.sonatype.com/artifact/io.github.fengxxc/excelflow-core/0.3.0)
+[![License](https://img.shields.io/badge/Version-v0.4.0-green.svg)](https://central.sonatype.com/artifact/io.github.fengxxc/excelflow-core/0.4.0)
 
 流式、优雅、连贯接口，读写Excel
 
@@ -14,14 +14,14 @@ maven
 <dependency>
   <groupId>io.github.fengxxc</groupId>
   <artifactId>excelflow-core</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 Gradle
 ```
-implementation group: 'io.github.fengxxc', name: 'excelflow-core', version: '0.3.0'
+implementation group: 'io.github.fengxxc', name: 'excelflow-core', version: '0.4.0'
 ```
-[download jar](https://s01.oss.sonatype.org/service/local/repositories/releases/content/io/github/fengxxc/excelflow-core/0.3.0/excelflow-core-0.3.0.jar)
+[download jar](https://s01.oss.sonatype.org/service/local/repositories/releases/content/io/github/fengxxc/excelflow-core/0.4.0/excelflow-core-0.4.0.jar)
 
 ### 读Excel
 假设有如下excel，需要读取数据并构建Java对象供后续的业务逻辑消费：
@@ -153,6 +153,70 @@ public class WriteTest {
 如果运行无误的话，将在输出目录里有个test3.xlsx，它是这样的：
 ![img2](./docs/example/img2.jpg)
 
+### 读转写
+如果把上面“读”和“写”的两个例子看作一个需求的话，我们会很自然地想到，“读”与“写”串在一起，会比较酷。这个当然可以有~
+
+只需把`.proccessEnd()`换成`.proccessThenWrite(os)`，其中参数`os`是输出流，`.proccessThenWrite(os)`就相当于`ExcelFlow.write(os)`，后面的配置与写Excel一致。下面是个例子：
+```java
+public class readToWriteTest {
+    public void readTowriteXlsx() throws IOException, InvalidFormatException, SAXException, ParserConfigurationException {
+        try(
+                InputStream is = ExcelFlow.class.getResourceAsStream("/excel/test1.xlsx");
+                OutputStream os = new FileOutputStream("F:\\temp\\excelflow\\export\\test1write.xlsx");
+        ) {
+            ExcelFlow.read(is).picks(
+                    Picker.of(NobelPrize.class)
+                            .sheet("Sheet1")
+                            .cellMap(cellMappers -> cellMappers
+                                    .cell("A2").prop(NobelPrize::getRanking).val(v -> ((int) v))
+                                    .cell("B2").prop(NobelPrize::getUniversity).val(v -> "㊗" + v)
+                                    .cell("C2").prop(NobelPrize::getCountry).val(country -> ((String) country).replaceAll("\u00a0", ""))
+                                    .cell("D2").prop(NobelPrize::getTotal)
+                                    .cell("E2").prop(NobelPrize::getNaturalScienceAwardTotal)
+                                    .cell("F2").prop(NobelPrize::getPhysics)
+                                    .cell("G2").prop(NobelPrize::getChemistry)
+                                    .cell("H2").prop(NobelPrize::getPhysiologyOrMedicine)
+                                    .cell("I2").prop(NobelPrize::getEconomy)
+                                    .cell("J2").prop(NobelPrize::getLiterature)
+                                    .cell("K2").prop(NobelPrize::getPeace)
+                            )
+                            .foward(Foward.Down)
+            )
+            .proccessThenWrite(os).record(
+                    // 表头
+                    Recorder.of(1) // 注意id，此处为1
+                            .propMap(propMaps -> propMaps
+                                    .cell("A2").val("国家")
+                                    .cell("A3").val("大学")
+                                    .cell("A4").val("排名")
+                                    .cell("A5").val("诺贝尔奖总人数")
+                            ),
+                    // 表数据
+                    Recorder.of(0, NobelPrize.class) // 注意id，此处为0
+                            // 数据源，入参类型为Iterator
+                            .source(Arrays.stream(nobelPrizes).iterator())
+                            .propMap(propMaps -> propMaps
+                                    .cell("B2").prop(NobelPrize::getCountry).val(country -> country + "🏆")
+                                    .cell("B3").prop(NobelPrize::getUniversity)
+                                    .cell("B4").prop(NobelPrize::getRanking)
+                                    .cell("B5").prop(NobelPrize::getTotal)
+                            )
+                            .foward(Foward.Right) // 向右迭代
+            ).proccessEnd();
+        }
+    }
+}
+```
+
+这里有几点需注意，
+- read部分的`Picker`的id要与write部分相应的`Recorder`的id保持一致（这样两条数据的“流”才有依据对接上）
+- 如果没有显式赋值id，将以从0开始的自增序列作为id
+
+在示例中，
+read部分的`Picker`只有一个且没有写明id，那么它的id为`0`；
+在write中的`Recorder`有两个，一个是表头，一个是数据，则表头的id手动赋`1`（或其他非0的值），数据部分的id赋`0`。
+
+---
 是不是很简单呢，ExcelFlow正如其名，像流一样操作excel，无论多么复杂的表格任务，一行代码就能搞定
 （当然真写成一行会被同事和未来的自己打死，还是要适当换行 __(:з)∠)_）。
 
@@ -161,7 +225,7 @@ ExcelFlow是基于Apache POI的封装，使用SAX模式读文件、SXSSFWorkbook
 
 ## TODO
 - [x] 支持直接映射Map
-- [ ] 读转写一条龙
+- [x] 读转写一条龙
 - [ ] 对合并单元格的处理
 - [ ] commit的处理
 - [ ] 对形状、图片的处理

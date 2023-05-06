@@ -7,7 +7,7 @@
     <groupId>io.github.fengxxc</groupId>
     <artifactId>excelflow</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <name>excelflow</name>
     <description>a easy way to read or write Excel by Java, just one line of code.(excelflow-core is main program)</description>
     <url>https://github.com/fengxxc/excelflow</url>
