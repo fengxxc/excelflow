@@ -85,7 +85,9 @@ public class ExcelFlowXlsxHandler extends XSSFSheetXMLHandler {
 
         @Override
         public void endSheet() {
-            this.sheetEndCallback.accept(super.sheetName);
+            if (this.sheetEndCallback != null) {
+                this.sheetEndCallback.accept(super.sheetName);
+            }
         }
 
         @Override
